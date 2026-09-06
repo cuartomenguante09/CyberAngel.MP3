@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAngel.MP3 - Intro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Slackey&display=swap" rel="stylesheet">
+    <style>
+        *, body, a, button, select, input {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="%23ffb6c1" stroke="%23ff007f" stroke-width="1.5"><path d="M4.5 3.5L11.5 20.5L14.5 13.5L21.5 10.5L4.5 3.5Z"/></svg>'), auto !important;
+        }
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            font-family: 'Slackey', cursive, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .loader-top-left {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            font-family: 'Great Vibes', cursive;
+            font-size: 20px;
+            color: #ff99cc;
+            line-height: 1.1;
+            text-shadow: 1px 1px #ff007f;
+        }
+        .loader-logo {
+            width: 320px;
+            max-width: 80vw;
+            height: auto;
+            margin-bottom: 25px;
+        }
+        .loader-bar-container {
+            width: 240px;
+            height: 20px;
+            background: #220011;
+            border: 2px solid #ff66b2;
+            border-radius: 4px;
+            display: flex;
+            padding: 2px;
+            gap: 2px;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+        }
+        .loader-block {
+            flex: 1;
+            height: 100%;
+            background: #440022;
+            border-radius: 1px;
+        }
+        .loader-block.active-block {
+            background: linear-gradient(180deg, #ff99cc, #ff3399);
+            box-shadow: 0 0 6px #ff007f;
+        }
+        .loader-percentage {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #ff66b2;
+            margin-top: 10px;
+        }
+        #load-btn {
+            margin-top: 18px;
+            background: linear-gradient(180deg, #ff99cc, #ff007f);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 8px 24px;
+            font-family: 'Slackey', cursive;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff007f;
+        }
+    </style>
+</head>
+<body>
+    <audio id="intro-audio" src="img/introcancion.mp3" preload="auto"></audio>
+
+    <div class="loader-top-left">Cyber<br>Angel<br>.mp3</div>
+    <img src="img/logo.png" alt="Logo" class="loader-logo">
+    
+    <div class="loader-bar-container" id="block-container">
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+        <div class="loader-block"></div>
+    </div>
+    
+    <div class="loader-percentage" id="loader-perc">0% complete</div>
+    <button id="load-btn" onclick="startLoadingProcess()">Cargar</button>
+
+    <script>
+        function startLoadingProcess() {
+            document.getElementById('load-btn').style.display = 'none';
+            document.getElementById('intro-audio').play().catch(() => {});
+
+            let loadProgress = 0;
+            const blocks = document.querySelectorAll('.loader-block');
+            const loaderPerc = document.getElementById('loader-perc');
+
+            const loadInterval = setInterval(() => {
+                loadProgress += 1;
+                if (loadProgress > 100) loadProgress = 100;
+
+                loaderPerc.textContent = loadProgress + '% complete';
+
+                const activeBlocksCount = Math.floor((loadProgress / 100) * blocks.length);
+                blocks.forEach((block, index) => {
+                    if (index < activeBlocksCount) {
+                        block.classList.add('active-block');
+                    }
+                });
+
+                if (loadProgress >= 100) {
+                    clearInterval(loadInterval);
+                    setTimeout(() => {
+window.location.href = 'login.html';
+                    }, 500);
+                }
+            }, 120);
+        }
+    </script>
+</body>
+</html>

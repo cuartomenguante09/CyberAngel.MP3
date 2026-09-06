@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Angel</title>
+    <title>Cyber Angel - Perfil</title>
     <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
     <style>
         *, body, a, button, select, input {
@@ -64,7 +64,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url('img/fondo.jfif');
+            background-image: url('../img/fondo.jfif');
             background-repeat: repeat;
             background-size: 600px auto;
             font-family: 'Comic Sans MS', 'Courier New', sans-serif;
@@ -179,7 +179,7 @@
         }
 
         .header-tag {
-            background: url('img/glitter.jfif') center/cover !important;
+            background: url('../img/glitter.jfif') center/cover !important;
             color: #ffffff;
             font-family: 'Slackey', cursive;
             font-size: 14px;
@@ -192,7 +192,7 @@
         }
 
         .zebra-tag {
-            background: url('img/cebra.jfif') center/cover !important;
+            background: url('../img/cebra.jfif') center/cover !important;
         }
 
         .col-center {
@@ -282,6 +282,7 @@
             justify-content: center;
             transition: transform 0.15s ease-in-out;
             border-radius: 50%;
+            cursor: pointer;
         }
 
         .nav-btn img {
@@ -291,20 +292,22 @@
             border-radius: 50%;
             border: 2px solid #ff007f;
             box-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
+            pointer-events: none;
         }
 
-        .nav-btn:hover { transform: scale(1.2) translateY(-3px); }
+        .nav-btn:hover { transform: scale(1.15) translateY(-2px); filter: drop-shadow(0 0 8px #ff007f); }
+        .nav-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <div class="top-navbar">
         <div class="top-nav-left">
-            <img src="img/perfil.jfif" alt="Avatar">
+            <img src="../img/perfil.jfif" alt="Avatar">
             <span>cyber_angel</span>
         </div>
         <div class="top-nav-right">
-            <a href="index.html" class="top-nav-btn">★ MATCH</a>
+            <a href="home.html" class="top-nav-btn">★ MATCH</a>
             <a href="perfil.html" class="top-nav-btn">PERFIL</a>
         </div>
     </div>
@@ -317,7 +320,7 @@
                 
                 <div class="box-card" style="padding: 6px;">
                     <div class="profile-img-wrap">
-                        <img src="img/perfil.jfif" class="profile-img" alt="Angel">
+                        <img src="../img/perfil.jfif" class="profile-img" alt="Angel">
                         <div class="match-badge">MATCH</div>
                     </div>
                     <div style="margin-top: 8px; font-size: 12px; color: #ff66b2; text-align: center;">mood: divaa &lt;3</div>
@@ -334,23 +337,22 @@
 
             <div class="col-center">
                 <div class="friend-bubble-wrap">
-                    <img src="img/banner1.jfif" class="friend-avatar" alt="Sofita">
+                    <img src="../img/banner1.jfif" class="friend-avatar" alt="Sofita">
                     <span class="friend-name">sofita</span>
                 </div>
                 <div class="friend-bubble-wrap">
-                    <img src="img/banner2.jfif" class="friend-avatar" alt="Azuu">
+                    <img src="../img/banner2.jfif" class="friend-avatar" alt="Azuu">
                     <span class="friend-name">azuu</span>
                 </div>
                 <div class="friend-bubble-wrap">
-                    <img src="img/banner7.jfif" class="friend-avatar" alt="Lauu">
+                    <img src="../img/banner7.jfif" class="friend-avatar" alt="Lauu">
                     <span class="friend-name">lauu</span>
                 </div>
                 <div class="friend-bubble-wrap">
-                    <img src="img/banner9.jfif" class="friend-avatar" alt="Maiite">
+                    <img src="../img/banner9.jfif" class="friend-avatar" alt="Maiite">
                     <span class="friend-name">maiite</span>
                 </div>
             </div>
-
             
             <div class="col-right">
                 <div class="header-tag" style="text-align: center;">
@@ -367,21 +369,19 @@
                     <div class="header-tag">fotos / "amigos/matchs"</div>
                     <div class="box-card" style="padding: 6px;">
                         <div class="grid-2">
-                            <img src="img/banner5.gif" class="grid-img grid-img-large" alt="Foto">
-                            <img src="img/banner2.jfif" class="grid-img" alt="Foto">
-                            <img src="img/banner1.jfif" class="grid-img" alt="Foto">
+                            <img src="../img/banner5.gif" class="grid-img grid-img-large" alt="Foto">
+                            <img src="../img/banner2.jfif" class="grid-img" alt="Foto">
+                            <img src="../img/banner1.jfif" class="grid-img" alt="Foto">
                         </div>
                     </div>
                 </div>
 
-               
                 <div>
                     <div class="header-tag">musica // my_profile_playlist.mp3</div>
                     <div class="box-card" style="padding: 8px;">
                         
-                        
                         <div style="display: flex; gap: 10px; align-items: center; background: #0a0a0a; border: 2px solid #ff007f; padding: 8px; box-shadow: 2px 2px 0px #ff007f; margin-bottom: 8px;">
-                            <img id="player-cover" src="img/cancion.jfif" alt="Cover" style="width: 65px; height: 65px; object-fit: cover; border: 2px solid #ff007f;">
+                            <img id="player-cover" src="../img/cancion.jfif" alt="Cover" style="width: 65px; height: 65px; object-fit: cover; border: 2px solid #ff007f;">
                             <div style="flex-grow: 1; overflow: hidden;">
                                 <div id="player-title" style="font-family: 'Slackey', cursive; font-size: 11px; color: #ff007f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Genie in a Bottle</div>
                                 <div id="player-artist" style="font-size: 10px; color: #ffb6c1; margin-bottom: 4px;">Christina Aguilera</div>
@@ -390,13 +390,10 @@
                                 </div>
                             </div>
                         </div>
-
                         
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            
-                          
-                            <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', 'img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
-                                <img src="img/cancion.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="1">
+                            <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', '../img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
+                                <img src="../img/cancion.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="1">
                                 <div style="font-size: 10px; line-height: 1.1;">
                                     <span style="color: #ffffff; font-weight: bold;">Genie in a Bottle</span><br>
                                     <span style="color: #ff66b2;">Christina Aguilera</span>
@@ -404,9 +401,8 @@
                                 <div style="margin-left: auto; color: #ff007f; font-size: 11px; padding-right: 4px;">▶</div>
                             </div>
 
-                           
-                            <div onclick="changeTrack('LOZuxwoc7B8', 'Toxic', 'Britney Spears', 'img/toxic.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
-                                <img src="img/toxic.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="2">
+                            <div onclick="changeTrack('LOZuxwoc7B8', 'Toxic', 'Britney Spears', '../img/toxic.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
+                                <img src="../img/toxic.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="2">
                                 <div style="font-size: 10px; line-height: 1.1;">
                                     <span style="color: #ffffff; font-weight: bold;">Toxic</span><br>
                                     <span style="color: #ff66b2;">Britney Spears</span>
@@ -414,16 +410,14 @@
                                 <div style="margin-left: auto; color: #ff007f; font-size: 11px; padding-right: 4px;">▶</div>
                             </div>
 
-                            
-                            <div onclick="changeTrack('98WtmW-lfeE', 'Teenage Dream', 'Katy Perry', 'img/teenage.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
-                                <img src="img/teenage.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="3">
+                            <div onclick="changeTrack('98WtmW-lfeE', 'Teenage Dream', 'Katy Perry', '../img/teenage.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
+                                <img src="../img/teenage.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="3">
                                 <div style="font-size: 10px; line-height: 1.1;">
                                     <span style="color: #ffffff; font-weight: bold;">Teenage Dream</span><br>
                                     <span style="color: #ff66b2;">Katy Perry</span>
                                 </div>
                                 <div style="margin-left: auto; color: #ff007f; font-size: 11px; padding-right: 4px;">▶</div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -432,8 +426,8 @@
                     <div class="header-tag">posts</div>
                     <div class="box-card" style="padding: 6px;">
                         <div class="grid-2">
-                            <img src="img/banner4.gif" class="grid-img" style="height: 95px;" alt="Post">
-                            <img src="img/banner9.jfif" class="grid-img" style="height: 95px;" alt="Post">
+                            <img src="../img/banner4.gif" class="grid-img" style="height: 95px;" alt="Post">
+                            <img src="../img/banner9.jfif" class="grid-img" style="height: 95px;" alt="Post">
                         </div>
                     </div>
                 </div>
@@ -441,23 +435,30 @@
 
         </div>
     </div>
-
-   
+    
     <div class="youtube-hidden">
         <div id="player"></div>
     </div>
-
     
     <div class="bottom-nav">
-        <button class="nav-btn" onclick="window.location.href='perfil.html'"><img src="img/perfil.jfif" alt="Perfil"></button>
-        <button class="nav-btn" onclick="window.location.href='index.html'"><img src="img/match.jfif" alt="Match"></button>
-        <button class="nav-btn"><img src="img/simbolomas.jfif" alt="Agregar"></button>
-        <button class="nav-btn"><img src="img/mensajes.jfif" alt="Mensajes"></button>
-        <button class="nav-btn"><img src="img/notificaciones.jfif" alt="Notificaciones"></button>
+        <button class="nav-btn" id="profile-btn" title="Perfil">
+            <img src="../img/perfil.jfif" alt="Perfil">
+        </button>
+        <button class="nav-btn" id="match-btn" title="Match">
+            <img src="../img/match.jfif" alt="Match">
+        </button>
+        <button class="nav-btn" id="add-btn" title="Agregar">
+            <img src="../img/simbolomas.jfif" alt="Agregar">
+        </button>
+        <button class="nav-btn" id="messages-btn" title="Mensajes">
+            <img src="../img/mensajes.jfif" alt="Mensajes">
+        </button>
+        <button class="nav-btn" id="notifications-btn" title="Notificaciones">
+            <img src="../img/notificaciones.jfif" alt="Notificaciones">
+        </button>
     </div>
 
     <script>
-    
     let player;
     let apiReady = false;
 
@@ -485,6 +486,26 @@
       document.getElementById('player-title').innerText = title;
       document.getElementById('player-artist').innerText = artist;
     }
+
+    document.getElementById('profile-btn').addEventListener('click', () => {
+        window.location.href = 'perfil.html';
+    });
+
+    document.getElementById('match-btn').addEventListener('click', () => {
+        window.location.href = 'home.html';
+    });
+
+    document.getElementById('add-btn').addEventListener('click', () => {
+        window.location.href = 'agregar.html';
+    });
+
+    document.getElementById('messages-btn').addEventListener('click', () => {
+        window.location.href = 'mensajes.html';
+    });
+
+    document.getElementById('notifications-btn').addEventListener('click', () => {
+        window.location.href = 'notificaciones.html';
+    });
 
     const items = [
         '<svg viewBox="0 0 24 24" fill="#ff007f"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',

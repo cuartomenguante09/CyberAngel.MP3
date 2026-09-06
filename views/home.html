@@ -7,7 +7,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
     <style>
-        
         *, body, a, button, select, input {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="%23ffb6c1" stroke="%23ff007f" stroke-width="1.5"><path d="M4.5 3.5L11.5 20.5L14.5 13.5L21.5 10.5L4.5 3.5Z"/></svg>'), auto !important;
         }
@@ -35,7 +34,6 @@
             }
         }
 
-       
         .falling-item {
             position: fixed;
             top: -50px;
@@ -62,7 +60,6 @@
             }
         }
 
-      
         html {
             overflow-y: scroll;
         }
@@ -88,11 +85,10 @@
             background: #ff007f;
         }
 
-        
         body {
             margin: 0;
             padding: 0;
-            background-image: url('img/fondo.jfif');
+            background-image: url('../img/fondo.jfif');
             background-repeat: repeat;
             background-size: 600px auto;
             font-family: 'Comic Sans MS', 'Courier New', sans-serif;
@@ -113,7 +109,6 @@
             z-index: 2;
         }
 
-      
         .header-top-container {
             width: 100%;
             display: flex;
@@ -135,7 +130,6 @@
             transform: scale(1.03);
         }
 
-        
         .header-banner {
             text-align: center;
             display: flex;
@@ -157,7 +151,6 @@
             transform: scale(1.05) rotate(2deg);
         }
 
-        
         .marquee-container {
             width: 100%;
             overflow: hidden;
@@ -194,7 +187,6 @@
             100% { transform: translateX(-50%); }
         }
 
-        
         .y2k-grid {
             display: flex;
             justify-content: center;
@@ -241,7 +233,6 @@
             display: block;
         }
 
-        
         .center-col {
             display: flex;
             flex-direction: column;
@@ -256,7 +247,6 @@
             box-shadow: 3px 3px 0px #000000;
         }
 
-        
         .ipod-widget {
             display: block;
             width: 100%;
@@ -331,6 +321,7 @@
             margin-top: 2px;
             position: relative;
             border: 1px solid #ff66b2;
+            cursor: pointer;
         }
 
         .ipod-widget .progress-bar {
@@ -455,7 +446,6 @@
             border-left: 8px solid #ff007f;
         }
 
-        
         .right-col {
             display: flex;
             background: #ffc0cb;
@@ -516,7 +506,6 @@
         .btn-a { background: #88e344; }
         .btn-s { background: #96356c; }
 
-        
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -543,6 +532,7 @@
             justify-content: center;
             transition: transform 0.15s ease-in-out;
             border-radius: 50%;
+            cursor: pointer;
         }
 
         .nav-item img {
@@ -552,6 +542,7 @@
             border-radius: 50%;
             border: 2px solid #ff007f;
             box-shadow: 0 0 6px rgba(255, 0, 127, 0.4);
+            pointer-events: none;
         }
 
         .nav-item:hover {
@@ -569,8 +560,7 @@
     <div class="y2k-desktop">
         
         <div class="header-top-container">
-            <img src="img/cyberangel.png" alt="Cyberangel" class="top-left-img">
-            
+            <img src="../img/cyberangel.png" alt="Cyberangel" class="top-left-img">
             
             <div class="header-banner">
                 <a href="http://www.gigaglitters.com/es/" target="_blank">
@@ -582,30 +572,28 @@
                 </a>
             </div>
 
-            <img src="img/logo.png" alt="Cyber Angel Logo" class="top-logo-right">
+            <img src="../img/logo.png" alt="Cyber Angel Logo" class="top-logo-right">
         </div>
 
-        
         <div class="marquee-container">
             <div class="marquee-track">
-                <img src="img/banner1.jfif" class="marquee-item" alt="Banner 1">
-                <img src="img/banner2.jfif" class="marquee-item" alt="Banner 2">
-                <img src="img/banner3.gif" class="marquee-item" alt="Banner 3">
-                <img src="img/banner4.gif" class="marquee-item" alt="Banner 4">
-                <img src="img/banner5.gif" class="marquee-item" alt="Banner 5">
-                <img src="img/banner6.jfif" class="marquee-item" alt="Banner 6">
+                <img src="../img/banner1.jfif" class="marquee-item" alt="Banner 1">
+                <img src="../img/banner2.jfif" class="marquee-item" alt="Banner 2">
+                <img src="../img/banner3.gif" class="marquee-item" alt="Banner 3">
+                <img src="../img/banner4.gif" class="marquee-item" alt="Banner 4">
+                <img src="../img/banner5.gif" class="marquee-item" alt="Banner 5">
+                <img src="../img/banner6.jfif" class="marquee-item" alt="Banner 6">
 
-                <img src="img/banner1.jfif" class="marquee-item" alt="Banner 1">
-                <img src="img/banner2.jfif" class="marquee-item" alt="Banner 2">
-                <img src="img/banner3.gif" class="marquee-item" alt="Banner 3">
-                <img src="img/banner4.gif" class="marquee-item" alt="Banner 4">
-                <img src="img/banner5.gif" class="marquee-item" alt="Banner 5">
-                <img src="img/banner6.jfif" class="marquee-item" alt="Banner 6">
+                <img src="../img/banner1.jfif" class="marquee-item" alt="Banner 1">
+                <img src="../img/banner2.jfif" class="marquee-item" alt="Banner 2">
+                <img src="../img/banner3.gif" class="marquee-item" alt="Banner 3">
+                <img src="../img/banner4.gif" class="marquee-item" alt="Banner 4">
+                <img src="../img/banner5.gif" class="marquee-item" alt="Banner 5">
+                <img src="../img/banner6.jfif" class="marquee-item" alt="Banner 6">
             </div>
         </div>
 
         <div class="y2k-grid">
-            
             
             <div class="win95-box">
                 <div class="win95-titlebar">
@@ -616,11 +604,10 @@
                     <u>F</u>ile &nbsp; <u>E</u>dit &nbsp; <u>V</u>iew &nbsp; <u>H</u>elp
                 </div>
                 <div class="win95-content">
-                    <img src="img/banner7.jfif" class="win95-img" alt="Angel Main">
+                    <img src="../img/banner7.jfif" class="win95-img" alt="Angel Main">
                 </div>
             </div>
 
-            
             <div class="center-col">
                 <div class="gender-box">
                     <label style="font-size: 13px;"><b>Gender:</b></label><br>
@@ -667,8 +654,8 @@
 
             <div class="right-col">
                 <div class="gallery">
-                    <img src="img/banner9.jfif" class="gallery-img" alt="Iconic">
-                    <img src="img/banner10.jfif" class="gallery-img" alt="2009">
+                    <img src="../img/banner9.jfif" class="gallery-img" alt="Iconic">
+                    <img src="../img/banner10.jfif" class="gallery-img" alt="2009">
                     <div class="quote-card">
                         born to be an absolute iconic diva
                     </div>
@@ -687,25 +674,38 @@
     </div>
 
     <div class="bottom-bar">
-        <button class="nav-item" title="Perfil">
-            <img src="img/perfil.jfif" alt="Perfil">
+        <button class="nav-item" id="profile-btn" title="Clic izq: Sobre Nosotras | Clic der: Perfil">
+            <img src="../img/perfil.jfif" alt="Perfil">
         </button>
-        <button class="nav-item" title="Match">
-            <img src="img/match.jfif" alt="Match">
+        <button class="nav-item" title="Match" onclick="window.location.href='match.html'">
+            <img src="../img/match.jfif" alt="Match">
         </button>
-        <button class="nav-item" title="Agregar">
-            <img src="img/simbolomas.jfif" alt="Agregar">
+        <button class="nav-item" title="Agregar" onclick="window.location.href='agregar.html'">
+            <img src="../img/simbolomas.jfif" alt="Agregar">
         </button>
-        <button class="nav-item" title="Mensajes">
-            <img src="img/mensajes.jfif" alt="Mensajes">
+        <button class="nav-item" title="Mensajes" onclick="window.location.href='mensajes.html'">
+            <img src="../img/mensajes.jfif" alt="Mensajes">
         </button>
-        <button class="nav-item" title="Notificaciones">
-            <img src="img/notificaciones.jfif" alt="Notificaciones">
+        <button class="nav-item" title="Notificaciones" onclick="window.location.href='notificaciones.html'">
+            <img src="../img/notificaciones.jfif" alt="Notificaciones">
         </button>
     </div>
 
     <script>
-  
+    const profileBtn = document.getElementById('profile-btn');
+
+    profileBtn.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    profileBtn.addEventListener('mousedown', function(e) {
+        if (e.button === 0) {
+            window.location.href = 'sobre-nosotras.html';
+        } else if (e.button === 2) {
+            window.location.href = 'perfil.html';
+        }
+    });
+
     const Y2K_ITEMS = [
         `<svg viewBox="0 0 24 24" fill="#ff007f"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
         `<svg viewBox="0 0 24 24" fill="#ffb6c1"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
@@ -737,7 +737,6 @@
 
     setInterval(createFallingItem, 300);
 
-   
     const colors = ['#ff007f', '#ff66b2', '#ffffff', '#ffb6c1'];
     let lastSparkleTime = 0;
 
@@ -771,7 +770,6 @@
         }, 800);
     }
 
-    
     let player;
     let current = 0;
     let progressInterval;
@@ -781,17 +779,17 @@
       {
         title: "Christina Aguilera - Genie in a Bottle",
         id: "kIDWG7Xar4E",
-        cover: "img/cancion.jfif"
+        cover: "../img/cancion.jfif"
       },
       {
         title: "Britney Spears - Toxic",
         id: "LOZuxwoc7B8",
-        cover: "img/banner1.jfif"
+        cover: "../img/banner1.jfif"
       },
       {
         title: "Katy Perry - Teenage Dream",
         id: "98WtmW-lfeE",
-        cover: "img/banner2.jfif"
+        cover: "../img/banner2.jfif"
       }
     ];
 
