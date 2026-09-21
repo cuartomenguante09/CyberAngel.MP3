@@ -1,3 +1,50 @@
+<?php
+$host = "localhost";
+$dbname = "cyber_angel_db";
+$username = "root";
+$password = "";
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {$pdo = null;
+}
+
+$mensaje_exito = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &&$pdo) {
+    $caption =$_POST['caption'] ?? '';
+    $mood =$_POST['mood'] ?? 'chilling';
+    $imagen_base64 =$_POST['imagen_base64'] ?? '';
+    
+    if (!empty($imagen_base64)) {
+        list($type, $imagen_base64) = explode(';',$imagen_base64);
+        list(, $imagen_base64)      = explode(',', $imagen_base64);$imageDecoded = base64_decode($imagen_base64);$newFileName = md5(time() . rand()) . '.jpg';
+        $uploadFileDir = '../img/uploads/';
+        
+        if (!is_dir($uploadFileDir)) {
+            mkdir($uploadFileDir, 0755, true);
+        }
+        
+        $dest_path = $uploadFileDir .$newFileName;
+        
+        if (file_put_contents($dest_path,$imageDecoded)) {
+            try {
+                $stmt =$pdo->prepare("INSERT INTO publicaciones (imagen, caption, mood) VALUES (?, ?, ?)");
+                $stmt->execute([$newFileName,$caption, $mood]);$mensaje_exito = "¡Publicación subida con éxito!";
+            } catch (Exception $e) {$mensaje_exito = "¡Imagen guardada con éxito!";
+            }
+        }
+    }
+}
+
+$usuario = ['nombre' => 'cyber_angel'];
+if ($pdo) {
+    $query =$pdo->query("SELECT * FROM usuarios LIMIT 1");
+    $resultado =$query->fetch(PDO::FETCH_ASSOC);
+    if ($resultado) {
+        $usuario =$resultado;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,6 +53,7 @@
     <title>Cyber Angel - Añadir Publicación</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     
     <style>
         *, body, a, button, select, input, textarea {
@@ -146,9 +194,8 @@
         }
 
         .preview-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            display: block;
         }
 
         .preview-placeholder {
@@ -281,10 +328,6 @@
             transform: scale(1.15);
         }
 
-        #fileInput {
-            display: none;
-        }
-
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -349,21 +392,22 @@
 
         <div class="top-left-title">Cyber<br>Angel<br>.mp3</div>
 
-        <div class="workspace-wrapper">
+        <form action="agregar.php" method="POST" enctype="multipart/form-data" id="postForm" class="workspace-wrapper">
             <div class="workspace-center">
                 <div class="corner-heart"></div>
                 
                 <div class="preview-box" id="previewBox">
-                    <span class="preview-placeholder">Sube una imagen<br>para tu publicación</span>
+                    <span class="preview-placeholder" id="placeholderText">Sube una imagen<br>para tu publicación</span>
+                    <img id="imageToCrop" style="display: none;" alt="A recortar">
                 </div>
             </div>
 
             <div class="post-details">
-                <input type="text" class="caption-input" id="postCaption" placeholder="~* Escribe tu estado o caption aquí... *~">
+                <input type="text" name="caption" class="caption-input" id="postCaption" placeholder="~* Escribe tu estado o caption aquí... *~">
                 
                 <div class="mood-container">
                     <span>✦ Mood:</span>
-                    <select class="mood-select" id="postMood">
+                    <select name="mood" class="mood-select" id="postMood">
                         <option value="chilling">🖤 Chilling / Relax</option>
                         <option value="flawless">✨ Flawless & Cute</option>
                         <option value="bored">💤 Bored / Whatever</option>
@@ -372,25 +416,23 @@
                     </select>
                 </div>
             </div>
-        </div>
 
-        <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="initCropper(event)">
+        </form>
 
         <div class="right-controls">
-            <button class="upload-icon-btn" onclick="document.getElementById('fileInput').click()" title="Subir foto"></button>
-            <button class="queen-publish-btn" onclick="publishPost()" title="Publicar"></button>
-            <!-- CORREGIDO: Ahora el botón de cancelar te devuelve a home.html en vez de index.html -->
-            <button class="close-cross-btn" onclick="window.location.href='home.html'" title="Cancelar"></button>
+            <button type="button" class="upload-icon-btn" onclick="document.getElementById('fileInput').click()" title="Subir foto"></button>
+            <button type="button" class="queen-publish-btn" onclick="publishPost()" title="Publicar"></button>
+            <button type="button" class="close-cross-btn" onclick="window.location.href='home.php'" title="Cancelar"></button>
         </div>
 
         <div class="bottom-bar">
-            <button class="nav-item" id="profile-btn" title="Clic izq: Volver al Home | Clic der: Perfil">
+            <button class="nav-item" id="profile-btn" title="Perfil">
                 <img src="../img/perfil.jfif" alt="Perfil">
             </button>
             <button class="nav-item" id="match-btn" title="Match">
                 <img src="../img/match.jfif" alt="Match">
             </button>
-            
             <button class="nav-item active" id="add-btn" title="Agregar">
                 <img src="../img/simbolomas.jfif" alt="Agregar">
             </button>
@@ -404,30 +446,61 @@
 
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script>
-        function previewImage(event) {
+        <?php if(!empty($mensaje_exito)): ?>
+            alert("<?php echo $mensaje_exito; ?>");
+            window.location.href = 'home.php';
+        <?php endif; ?>
+
+        let cropper = null;
+
+        function initCropper(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const previewBox = document.getElementById('previewBox');
-                    previewBox.innerHTML = `<img src="${e.target.result}" alt="Publicación">`;
+                    const imageElem = document.getElementById('imageToCrop');
+                    const placeholder = document.getElementById('placeholderText');
+                    
+                    if (placeholder) placeholder.style.display = 'none';
+                    
+                    imageElem.src = e.target.result;
+                    imageElem.style.display = 'block';
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(imageElem, {
+                        aspectRatio: NaN,
+                        viewMode: 1,
+                        autoCropArea: 0.9,
+                        responsive: true,
+                    });
                 }
                 reader.readAsDataURL(file);
             }
         }
 
         function publishPost() {
-            const previewBox = document.getElementById('previewBox');
-            const caption = document.getElementById('postCaption').value;
-            const mood = document.getElementById('postMood').value;
-
-            if (previewBox.querySelector('img')) {
-                alert(`💖 ¡Publicación subida con éxito!\n📝 Caption: "${caption || 'Sin descripción'}"\n✦ Mood: ${mood}`);
-                // CORREGIDO: Al publicar, te manda a home.html en lugar de reiniciar el index/intro
-                window.location.href = 'home.html';
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 800,
+                    height: 800,
+                });
+                const base64Image = canvas.toDataURL('image/jpeg');
+                
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'imagen_base64';
+                hiddenInput.value = base64Image;
+                
+                const form = document.getElementById('postForm');
+                form.appendChild(hiddenInput);
+                form.submit();
             } else {
-                alert("⚠️ ¡Haz clic primero en el icono de foto para seleccionar una imagen!");
+                alert("⚠️ ¡Haz clic primero en el icono de foto para seleccionar y ajustar una imagen!");
             }
         }
 
@@ -436,25 +509,17 @@
             profileBtn.addEventListener('contextmenu', function(e) { e.preventDefault(); });
             profileBtn.addEventListener('mousedown', function(e) {
                 if (e.button === 0) {
-                    // CORREGIDO: Apunta a home.html para no mostrar la intro de nuevo
-                    window.location.href = 'home.html'; 
+                    window.location.href = 'home.php'; 
                 } else if (e.button === 2) {
-                    window.location.href = 'perfil.html';
+                    window.location.href = 'perfil.php';
                 }
             });
         }
 
-        const matchBtn = document.getElementById('match-btn');
-        if (matchBtn) matchBtn.addEventListener('click', () => { window.location.href = 'match.html'; });
-
-        const addBtn = document.getElementById('add-btn');
-        if (addBtn) addBtn.addEventListener('click', () => { window.location.href = 'agregar.html'; });
-
-        const messagesBtn = document.getElementById('messages-btn');
-        if (messagesBtn) messagesBtn.addEventListener('click', () => { window.location.href = 'mensajes.html'; });
-
-        const notificationsBtn = document.getElementById('notifications-btn');
-        if (notificationsBtn) notificationsBtn.addEventListener('click', () => { window.location.href = 'notificaciones.html'; });
+        document.getElementById('match-btn').addEventListener('click', () => { window.location.href = 'home.php'; });
+        document.getElementById('add-btn').addEventListener('click', () => { window.location.href = 'agregar.php'; });
+        document.getElementById('messages-btn').addEventListener('click', () => { window.location.href = 'mensajes.php'; });
+        document.getElementById('notifications-btn').addEventListener('click', () => { window.location.href = 'notificaciones.php'; });
 
         const Y2K_ITEMS = [
             `<svg viewBox="0 0 24 24" fill="#ff007f"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,

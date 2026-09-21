@@ -1,3 +1,26 @@
+<?php
+$host = "localhost";
+$dbname = "cyber_angel_db";
+$username = "root";
+$password = "";
+
+$ultima_pub = null;
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Consultar la última publicación subida
+    $stmt = $pdo->query("SELECT * FROM publicaciones ORDER BY id DESC LIMIT 1");
+    $ultima_pub = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Manejo silencioso si la base de datos aún no está conectada o la tabla no existe
+}
+
+// Valores por defecto si aún no hay publicaciones
+$imagen_mostrar = ($ultima_pub && !empty($ultima_pub['imagen'])) ? '../img/uploads/' . $ultima_pub['imagen'] : '../img/banner7.jfif';
+$caption_mostrar = ($ultima_pub && !empty($ultima_pub['caption'])) ? $ultima_pub['caption'] : 'born to be an absolute iconic diva';
+$mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood'] : 'angel';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -553,6 +576,56 @@
         .nav-item:active {
             transform: scale(0.95);
         }
+
+        /* Estilo para el botón flotante en la esquina inferior izquierda */
+        .crud-corner-btn {
+            position: fixed;
+            bottom: 65px;
+            left: 15px;
+            background: #ffb6c1;
+            border: 3px solid #ff007f;
+            box-shadow: 4px 4px 0px #000000;
+            z-index: 98;
+            width: 90px;
+            text-align: center;
+        }
+
+        .crud-corner-titlebar {
+            background: #ff007f;
+            color: #ffffff;
+            padding: 2px 4px;
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .crud-corner-body {
+            padding: 6px;
+            background: #ffffff;
+        }
+
+        .crud-corner-link {
+            display: block;
+            background: #ff007f;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: 'Slackey', cursive;
+            font-size: 11px;
+            padding: 4px 0;
+            border: 2px solid #ffffff;
+            box-shadow: 2px 2px 0px #000000;
+            transition: transform 0.1s ease;
+        }
+
+        .crud-corner-link:hover {
+            background: #ff66b2;
+            transform: scale(1.05);
+        }
+
+        .crud-corner-link:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -604,7 +677,10 @@
                     <u>F</u>ile &nbsp; <u>E</u>dit &nbsp; <u>V</u>iew &nbsp; <u>H</u>elp
                 </div>
                 <div class="win95-content">
-                    <img src="../img/banner7.jfif" class="win95-img" alt="Angel Main">
+                    <img src="<?php echo htmlspecialchars($imagen_mostrar); ?>" class="win95-img" alt="Última Publicación">
+                    <div style="margin-top: 6px; font-size: 10px; color: #ff007f; word-break: break-word;">
+                        ✨ <b><?php echo htmlspecialchars($caption_mostrar); ?></b>
+                    </div>
                 </div>
             </div>
 
@@ -673,20 +749,31 @@
 
     </div>
 
+    <!-- BOTÓN FLOTANTE CRUD EN LA ESQUINA INFERIOR IZQUIERDA -->
+    <div class="crud-corner-btn">
+        <div class="crud-corner-titlebar">
+            <span>db.exe</span>
+            <span>×</span>
+        </div>
+        <div class="crud-corner-body">
+            <a href="crud.php" class="crud-corner-link">CRUD</a>
+        </div>
+    </div>
+
     <div class="bottom-bar">
         <button class="nav-item" id="profile-btn" title="Clic izq: Sobre Nosotras | Clic der: Perfil">
             <img src="../img/perfil.jfif" alt="Perfil">
         </button>
-        <button class="nav-item" title="Match" onclick="window.location.href='match.html'">
+        <button class="nav-item" title="Match" onclick="window.location.href='match.php'">
             <img src="../img/match.jfif" alt="Match">
         </button>
-        <button class="nav-item" title="Agregar" onclick="window.location.href='agregar.html'">
+        <button class="nav-item" title="Agregar" onclick="window.location.href='agregar.php'">
             <img src="../img/simbolomas.jfif" alt="Agregar">
         </button>
-        <button class="nav-item" title="Mensajes" onclick="window.location.href='mensajes.html'">
+        <button class="nav-item" title="Mensajes" onclick="window.location.href='mensajes.php'">
             <img src="../img/mensajes.jfif" alt="Mensajes">
         </button>
-        <button class="nav-item" title="Notificaciones" onclick="window.location.href='notificaciones.html'">
+        <button class="nav-item" title="Notificaciones" onclick="window.location.href='notificaciones.php'">
             <img src="../img/notificaciones.jfif" alt="Notificaciones">
         </button>
     </div>
@@ -700,9 +787,9 @@
 
     profileBtn.addEventListener('mousedown', function(e) {
         if (e.button === 0) {
-            window.location.href = 'sobre-nosotras.html';
+            window.location.href = 'sobre-nosotras.php';
         } else if (e.button === 2) {
-            window.location.href = 'perfil.html';
+            window.location.href = 'perfil.php';
         }
     });
 

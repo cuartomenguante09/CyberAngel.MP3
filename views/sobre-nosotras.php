@@ -1,3 +1,23 @@
+<?php
+$host = "localhost";
+$dbname = "cyber_angel_db";
+$username = "root";
+$password = "";
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {$pdo = null;
+}
+
+$usuario = ['nombre' => 'cyber_angel'];
+if ($pdo) {
+    $query =$pdo->query("SELECT * FROM usuarios LIMIT 1");
+    $resultado =$query->fetch(PDO::FETCH_ASSOC);
+    if ($resultado) {
+        $usuario =$resultado;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -132,27 +152,45 @@
             z-index: 2;
         }
 
+        /* Contenedor Flex para centrar perfectamente el título */
+        .title-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 15px;
+            margin-bottom: 12px;
+        }
+
         .main-title {
             text-align: center;
             font-family: 'Great Vibes', cursive;
-            font-size: 52px;
+            font-size: 58px;
             color: #ffb6c1;
             text-shadow: 2px 2px #ff007f, -2px -2px #000;
-            margin-top: 10px;
-            margin-bottom: 8px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid #ff007f;
+            border-radius: 10px;
+            padding: 5px 25px;
+            box-shadow: 4px 4px 0px #ff007f;
         }
 
         .intro-box {
             text-align: center;
-            font-size: 11.5px;
-            line-height: 1.4;
+            font-size: 12px;
+            line-height: 1.5;
             max-width: 820px;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 35px auto;
+            background: rgba(0, 0, 0, 0.88);
+            border: 3px solid #ff007f;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px #ff007f;
             text-shadow: 1px 1px 2px #000;
         }
 
         .intro-box b {
-            color: #ffb6c1;
+            color: #ff66b2;
+            font-size: 13px;
         }
 
         .grid-layout {
@@ -331,21 +369,23 @@
     <div class="top-navbar">
         <div class="top-nav-left">
             <img src="../img/perfil.jfif" alt="Avatar">
-            <span>cyber_angel</span>
+            <span><?php echo htmlspecialchars($usuario['nombre']); ?></span>
         </div>
         <div class="top-nav-right">
-            <a href="home.html" class="top-nav-btn">★ MATCH</a>
-            <a href="perfil.html" class="top-nav-btn">PERFIL</a>
+            <a href="home.php" class="top-nav-btn">★ MATCH</a>
+            <a href="perfil.php" class="top-nav-btn">PERFIL</a>
         </div>
     </div>
 
     <div class="about-container">
         
-        <div class="main-title">¿Querés queque?</div>
+        <div class="title-wrapper">
+            <div class="main-title">¿Querés queque?</div>
+        </div>
         
         <div class="intro-box">
-            <b>Somos Queque Studio. 4 creadoras, 100% queques, 0% bugs.</b><br>
-            Un equipo de estudiantes apasionadas por la tecnología, la programación y el diseño. Creamos CyberAngelmp3 para romper con las redes sociales aburridas y traer de vuelta la esencia retro de los 2000s: un espacio único, libre de algoritmos raros y lleno de personalidad, música y buenas vibras.<br>
+            <b>Somos Queque Studio. 4 creadoras, 100% queques, 0% bugs.</b><br><br>
+            Un equipo de estudiantes apasionadas por la tecnología, la programación y el diseño. Creamos CyberAngelmp3 para romper con las redes sociales aburridas y traer de vuelta la esencia retro de los 2000s: un espacio único, libre de algoritmos raros y lleno de personalidad, música y buenas vibras.<br><br>
             ¡Te servimos la mejor porción de código y estética! ¡Conocé al equipo detrás de la divina magia!
         </div>
 
@@ -494,31 +534,30 @@
             currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
             loadSong(currentSongIndex);
             audioElement.play();
-            playPSauseBtnText = "⏸ Pause"; // fixed typo
             playPauseBtn.textContent = "⏸ Pause";
         }
 
         const profileBtn = document.getElementById('profile-btn');
         profileBtn.addEventListener('contextmenu', e => e.preventDefault());
         profileBtn.addEventListener('mousedown', e => {
-            if (e.button === 0) window.location.href = '../index.html';
-            else if (e.button === 2) window.location.href = 'perfil.html';
+            if (e.button === 0) window.location.href = 'home.php';
+            else if (e.button === 2) window.location.href = 'perfil.php';
         });
 
         document.getElementById('match-btn').addEventListener('click', () => {
-            window.location.href = 'home.html';
+            window.location.href = 'home.php';
         });
 
         document.getElementById('add-btn').addEventListener('click', () => {
-            window.location.href = 'agregar.html';
+            window.location.href = 'agregar.php';
         });
 
         document.getElementById('messages-btn').addEventListener('click', () => {
-            window.location.href = 'mensajes.html';
+            window.location.href = 'mensajes.php';
         });
 
         document.getElementById('notifications-btn').addEventListener('click', () => {
-            window.location.href = 'notificaciones.html';
+            window.location.href = 'notificaciones.php';
         });
 
         const Y2K_ITEMS = [

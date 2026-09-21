@@ -1,3 +1,40 @@
+<?php
+$host = "localhost";
+$dbname = "cyber_angel_db";
+$username = "root";
+$password = "";
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    $pdo = null;
+}
+
+$mensaje_exito = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
+    $nuevo_nombre = $_POST['nombre'] ?? '';
+    $nueva_edad = $_POST['edad'] ?? '';
+    $nuevo_bio = $_POST['bio'] ?? '';
+
+    try {
+        $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, edad = ?, bio = ? WHERE id = 1");
+        $stmt->execute([$nuevo_nombre, $nueva_edad, $nuevo_bio]);
+        $mensaje_exito = "¡Perfil actualizado con éxito!";
+    } catch (Exception $e) {
+        $mensaje_exito = "Error al actualizar.";
+    }
+}
+
+$usuario = ['nombre' => 'Angel', 'edad' => 17, 'bio' => 'I love: ME'];
+if ($pdo) {
+    $query = $pdo->query("SELECT * FROM usuarios LIMIT 1");
+    $resultado = $query->fetch(PDO::FETCH_ASSOC);
+    if ($resultado) {
+        $usuario = $resultado;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +43,7 @@
     <title>Cyber Angel - Perfil</title>
     <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
     <style>
-        *, body, a, button, select, input {
+        *, body, a, button, select, input, textarea {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="%23ffb6c1" stroke="%23ff007f" stroke-width="1.5"><path d="M4.5 3.5L11.5 20.5L14.5 13.5L21.5 10.5L4.5 3.5Z"/></svg>'), auto !important;
         }
 
@@ -246,6 +283,34 @@
         .grid-img:hover { filter: brightness(1.2); transform: scale(1.02); }
         .grid-img-large { grid-column: span 2; height: 110px; }
 
+        .form-edit input, .form-edit textarea {
+            width: 100%;
+            background: #111;
+            border: 1px solid #ff007f;
+            color: #fff;
+            padding: 5px;
+            margin-top: 4px;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+            box-sizing: border-box;
+            font-size: 11px;
+        }
+
+        .form-edit button {
+            background: #ff007f;
+            color: #fff;
+            border: 1px solid #fff;
+            font-family: 'Slackey', cursive;
+            padding: 5px 10px;
+            font-size: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .form-edit button:hover {
+            background: #ff66b2;
+        }
+
         .youtube-hidden {
             width: 1px;
             height: 1px;
@@ -304,11 +369,11 @@
     <div class="top-navbar">
         <div class="top-nav-left">
             <img src="../img/perfil.jfif" alt="Avatar">
-            <span>cyber_angel</span>
+            <span><?php echo htmlspecialchars($usuario['nombre']); ?></span>
         </div>
         <div class="top-nav-right">
-            <a href="home.html" class="top-nav-btn">★ MATCH</a>
-            <a href="perfil.html" class="top-nav-btn">PERFIL</a>
+            <a href="home.php" class="top-nav-btn">★ MATCH</a>
+            <a href="perfil.php" class="top-nav-btn">PERFIL</a>
         </div>
     </div>
 
@@ -359,10 +424,25 @@
                     EDITAR PERFIL
                 </div>
 
-                <div class="box-card" style="font-size: 12px; line-height: 1.5;">
-                    <div style="color: #ff007f; font-family: 'Slackey', cursive; font-size: 12px; margin-bottom: 4px;">Angel's blogg!! &lt;3</div>
-                    <div style="color: #ff66b2; font-weight: bold; margin-bottom: 4px;">ABOUT ME:</div>
-                    Name: Angel<br>Age: 17<br>I love: ME
+                <div class="box-card form-edit" style="font-size: 12px; line-height: 1.4;">
+                    <div style="color: #ff007f; font-family: 'Slackey', cursive; font-size: 11px; margin-bottom: 6px;">Angel's blogg!! &lt;3</div>
+                    
+                    <?php if(!empty($mensaje_exito)): ?>
+                        <div style="background: #ff007f; color: #fff; padding: 4px; font-size: 10px; text-align: center; margin-bottom: 6px;"><?php echo $mensaje_exito; ?></div>
+                    <?php endif; ?>
+
+                    <form action="perfil.php" method="POST">
+                        <label style="color: #ff66b2; font-weight: bold;">Name:</label>
+                        <input type="text" name="nombre" value="<?php echo htmlspecialchars($usuario['nombre']); ?>" required>
+
+                        <label style="color: #ff66b2; font-weight: bold;">Age:</label>
+                        <input type="number" name="edad" value="<?php echo htmlspecialchars($usuario['edad']); ?>" required>
+
+                        <label style="color: #ff66b2; font-weight: bold;">About Me / Bio:</label>
+                        <textarea name="bio" rows="2" required><?php echo htmlspecialchars($usuario['bio']); ?></textarea>
+
+                        <button type="submit">GUARDAR CAMBIOS</button>
+                    </form>
                 </div>
 
                 <div>
@@ -392,7 +472,7 @@
                         </div>
                         
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', '../img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
+                            <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', '../img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15) '">
                                 <img src="../img/cancion.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="1">
                                 <div style="font-size: 10px; line-height: 1.1;">
                                     <span style="color: #ffffff; font-weight: bold;">Genie in a Bottle</span><br>
@@ -488,23 +568,23 @@
     }
 
     document.getElementById('profile-btn').addEventListener('click', () => {
-        window.location.href = 'perfil.html';
+        window.location.href = 'perfil.php';
     });
 
     document.getElementById('match-btn').addEventListener('click', () => {
-        window.location.href = 'home.html';
+        window.location.href = 'home.php';
     });
 
     document.getElementById('add-btn').addEventListener('click', () => {
-        window.location.href = 'agregar.html';
+        window.location.href = 'agregar.php';
     });
 
     document.getElementById('messages-btn').addEventListener('click', () => {
-        window.location.href = 'mensajes.html';
+        window.location.href = 'mensajes.php';
     });
 
     document.getElementById('notifications-btn').addEventListener('click', () => {
-        window.location.href = 'notificaciones.html';
+        window.location.href = 'notificaciones.php';
     });
 
     const items = [

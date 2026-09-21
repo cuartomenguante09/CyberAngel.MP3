@@ -1,3 +1,30 @@
+<?php
+// Conexión a la base de datos (ajustá el archivo de conexión si el tuyo se llama distinto)
+require_once 'conexion.php';
+
+$mensaje = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $usuario = trim($_POST['usuario'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+
+    if (!empty($usuario) && !empty($password)) {
+        // Insertamos los datos en tu tabla de MySQL
+        $sql = "INSERT INTO usuarios (usuario, password) VALUES (:usuario, :password)";
+        $stmt = $pdo->prepare($sql);
+        
+        if ($stmt->execute(['usuario' => $usuario, 'password' => $password])) {
+            // Si se guarda bien, redirige a home.php dentro de views
+            header("Location: views/home.php");
+            exit();
+        } else {
+            $mensaje = "Error al guardar en la base de datos.";
+        }
+    } else {
+        $mensaje = "Por favor, completa todos los campos.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,7 +49,6 @@
             overflow: hidden;
         }
 
-        
         .os-window {
             width: 580px;
             max-width: 95vw;
@@ -34,7 +60,6 @@
             transition: width 0.3s ease;
         }
 
-        
         .os-header {
             background-color: #ffb6c1;
             padding: 12px 16px;
@@ -94,7 +119,6 @@
             line-height: 1;
         }
 
-       
         .login-body {
             padding: 25px 20px 45px 20px;
             text-align: center;
@@ -246,7 +270,6 @@
             transform: scale(1.08);
         }
 
-        
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -294,7 +317,6 @@
             transform: scale(0.95);
         }
 
-        
         .custom-modal-overlay {
             position: fixed;
             top: 0;
@@ -368,7 +390,6 @@
 </head>
 <body>
 
-    
     <div class="os-window">
         <div class="os-header">
             <div class="os-title-container">
@@ -390,19 +411,24 @@
                 <img src="img/login-title.jpg" alt="LOG IN" class="login-title-img">
             </div>
 
-            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+            <!-- Formulario conectado a PHP con method POST -->
+            <form class="login-form" id="loginForm" action="login.php" method="POST">
                 <div class="input-box">
-                    <input type="text" id="userInput" placeholder="email ID or Username" class="login-input" required>
+                    <input type="text" name="usuario" id="userInput" placeholder="email ID or Username" class="login-input" required>
                 </div>
 
                 <div class="input-box">
-                    <input type="password" id="passwordField" placeholder="password" class="login-input" required>
+                    <input type="password" name="password" id="passwordField" placeholder="password" class="login-input" required>
                     <button type="button" class="eye-toggle-btn" onclick="togglePassword()">
                         <img src="img/ojo.jfif" alt="Mostrar contraseña" id="eyeIcon">
                     </button>
                 </div>
 
                 <button type="submit" class="login-submit-btn">ENTER</button>
+
+                <?php if (!empty($mensaje)): ?>
+                    <div style="color: #ff3366; font-size: 11px; margin-top: 5px;"><?php echo htmlspecialchars($mensaje); ?></div>
+                <?php endif; ?>
 
                 <div class="separator">- or continue with -</div>
 
@@ -415,9 +441,8 @@
         </div>
     </div>
 
-    
     <div class="bottom-bar">
-        <button class="nav-item" title="Perfil (Index)" onclick="window.location.href='views/perfil.html'">
+        <button class="nav-item" title="Perfil (Index)" onclick="window.location.href='views/perfil.php'">
             <img src="img/perfil.jfif" alt="Perfil">
         </button>
         <button class="nav-item" title="Match" onclick="window.location.href='views/match.html'">
@@ -434,7 +459,6 @@
         </button>
     </div>
 
-   
     <div class="custom-modal-overlay" id="customModal">
         <div class="custom-modal">
             <div class="custom-modal-header">
@@ -449,8 +473,6 @@
     </div>
 
     <script>
-        let shouldRedirect = false;
-
         function togglePassword() {
             const passwordInput = document.getElementById('passwordField');
             if (passwordInput.type === 'password') {
@@ -460,23 +482,13 @@
             }
         }
 
-        function showCustomAlert(message, redirectOnClose = false) {
+        function showCustomAlert(message) {
             document.getElementById('modalMessage').innerText = message;
-            shouldRedirect = redirectOnClose;
             document.getElementById('customModal').classList.add('active');
         }
 
         function closeCustomAlert() {
             document.getElementById('customModal').classList.remove('active');
-            if (shouldRedirect) {
-                window.location.href = 'views/home.html';
-            }
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const user = document.getElementById('userInput').value;
-            showCustomAlert('¡Bienvenido/a, ' + user + '! Entrando a CyberAngel.MP3...', true);
         }
 
         function socialLogin(provider) {

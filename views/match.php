@@ -1,3 +1,25 @@
+<?php
+$host = "localhost";
+$dbname = "cyber_angel_db";
+$username = "root";
+$password = "";
+
+$perfiles = [];
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    $stmt =$pdo->query("SELECT * FROM match_perfiles");
+    $perfiles =$stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+}
+
+if (empty($perfiles)) {$perfiles = [
+        ['id' => 1, 'nombre' => 'Alex', 'imagen' => '../img/matchperfil.jpg'],
+        ['id' => 2, 'nombre' => 'Valentina', 'imagen' => '../img/perfil.jfif'],
+        ['id' => 3, 'nombre' => 'Dante', 'imagen' => '../img/matchperfil.jpg']
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,16 +27,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel - Match</title>
     
-    <!-- Fuentes Y2K -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     
     <style>
-        /* Cursor personalizado Y2K */
         *, body, a, button, select, input {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="%23ffb6c1" stroke="%23ff007f" stroke-width="1.5"><path d="M4.5 3.5L11.5 20.5L14.5 13.5L21.5 10.5L4.5 3.5Z"/></svg>'), auto !important;
         }
 
-        /* Estrellitas mágicas del cursor */
         .sparkle {
             position: fixed;
             pointer-events: none;
@@ -32,7 +51,6 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) translateY(20px) rotate(180deg); }
         }
 
-        /* Elementos que caen */
         .falling-item {
             position: fixed;
             top: -50px;
@@ -49,7 +67,6 @@
 
         html { overflow-y: scroll; }
 
-        /* Estilos de barra de desplazamiento retro */
         ::-webkit-scrollbar { width: 16px; background-color: #ffe4e1; }
         ::-webkit-scrollbar-track { background: #ffd0e3; border-left: 2px solid #ff007f; }
         ::-webkit-scrollbar-thumb { background: #ff66b2; border: 2px solid #ffffff; outline: 1px solid #ff007f; border-radius: 6px; }
@@ -71,7 +88,6 @@
             background-color: #000000;
         }
 
-        /* Contenedor principal simulando la ventana central negra con cremalleras */
         .window-container {
             width: 100%;
             max-width: 800px;
@@ -89,7 +105,6 @@
             z-index: 2;
         }
 
-        /* Efecto de líneas de monitor antiguo (Scanlines CRT) */
         .window-container::after {
             content: " ";
             display: block;
@@ -102,7 +117,6 @@
             opacity: 0.5;
         }
 
-        /* Pantalla de iluminación rosa total para cuando hay MATCH */
         .screen-glow {
             position: absolute;
             top: 0;
@@ -126,7 +140,6 @@
             100% { opacity: 0; transform: scale(1); }
         }
 
-        /* Textos decorativos de fondo */
         .bg-decor-text {
             position: absolute;
             font-family: 'Great Vibes', cursive;
@@ -142,7 +155,6 @@
         .t3 { bottom: 120px; left: 40px; transform: rotate(12deg); }
         .t4 { bottom: 100px; right: 40px; transform: rotate(-8deg); font-size: 32px; }
 
-        /* Nota flotante superior */
         .floating-marquee-container {
             width: 100%;
             overflow: hidden;
@@ -172,7 +184,6 @@
             100% { transform: translateX(-100vw); }
         }
 
-        /* Contador de perfiles */
         .counter-badge {
             position: absolute;
             top: 20px;
@@ -187,7 +198,6 @@
             pointer-events: none;
         }
 
-        /* Título superior izquierdo */
         .top-left-title {
             position: absolute;
             top: 20px;
@@ -202,7 +212,6 @@
             letter-spacing: 1px;
         }
 
-        /* Área central */
         .match-workspace {
             position: relative;
             width: 100%;
@@ -214,19 +223,16 @@
             z-index: 20;
         }
 
-        /* Contenedor del mazo */
         .deck-container {
             position: relative;
             width: 280px;
             height: 340px;
         }
 
-        /* Tarjetas apiladas */
         .profile-card {
             position: absolute;
             width: 280px;
             height: 320px;
-            background-image: url('../img/matchperfil.jpg');
             background-size: cover;
             background-position: center;
             border-radius: 4px;
@@ -235,22 +241,6 @@
             border: 2px solid #ff007f;
         }
 
-        .profile-card:nth-child(1) {
-            z-index: 3;
-            transform: rotate(-3deg);
-        }
-        .profile-card:nth-child(2) {
-            z-index: 2;
-            transform: rotate(2deg) translate(10px, 8px);
-            filter: brightness(0.8);
-        }
-        .profile-card:nth-child(3) {
-            z-index: 1;
-            transform: rotate(-5deg) translate(20px, 15px);
-            filter: brightness(0.6);
-        }
-
-        /* Botones laterales */
         .action-button-left, .action-button-right {
             position: absolute;
             width: 110px;
@@ -288,31 +278,61 @@
             transform: translateY(-50%) scale(0.95);
         }
 
-        /* Mensaje tierno para No Match */
-        .motivational-popup {
-            position: absolute;
-            z-index: 40;
-            background: #000000;
-            border: 2px dashed #ff007f;
-            color: #ff99cc;
-            padding: 12px 22px;
-            font-size: 15px;
-            text-align: center;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
-            pointer-events: none;
+        .screen-kiss-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 0, 127, 0.2);
+            backdrop-filter: blur(2px);
+            z-index: 150;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            top: 40%;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
         }
 
-        .motivational-popup.show {
+        .screen-kiss-overlay.active {
             opacity: 1;
-            transform: scale(1) translateY(-40px);
+            pointer-events: auto;
         }
 
-        /* --- VENTANA DE MATCH ESTILO MYSPACE / Y2K --- */
+        .giant-screen-kiss {
+            font-size: 15vw;
+            color: #ff007f;
+            filter: drop-shadow(0 0 35px #ffffff) drop-shadow(0 0 60px #ff007f);
+            transform: scale(0.1);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .screen-kiss-overlay.active .giant-screen-kiss {
+            transform: scale(1);
+            opacity: 1;
+            animation: kissPulse 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes kissPulse {
+            0% { transform: scale(1) rotate(-3deg); }
+            100% { transform: scale(1.1) rotate(3deg); }
+        }
+
+        .kiss-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 45px;
+            color: #ffffff;
+            text-shadow: 2px 2px #ff007f, 0 0 20px #ff007f;
+            white-space: nowrap;
+        }
+
         .match-success-overlay {
             position: fixed;
             top: 0;
@@ -384,7 +404,6 @@
             box-shadow: 0 0 10px #ff007f;
         }
 
-        /* Animación del Corazón SVG */
         .pixel-heart-beat {
             display: flex;
             align-items: center;
@@ -451,7 +470,6 @@
             box-shadow: none;
         }
 
-        /* Barra de navegación inferior */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -496,11 +514,6 @@
             filter: drop-shadow(0 0 8px #ff007f);
         }
 
-        .nav-item:active {
-            transform: scale(0.95);
-        }
-
-        /* Indicador de sección activa en la barra inferior (Match resaltado) */
         .nav-item.active img {
             border: 3px solid #ffffff;
             box-shadow: 0 0 12px #ff007f;
@@ -526,7 +539,7 @@
             <div class="floating-marquee">✨ nota: tu brillo es verdadero el del resto es solo sudor! ✨</div>
         </div>
 
-        <div class="counter-badge" id="counterBadge">Perfiles: 3</div>
+        <div class="counter-badge" id="counterBadge">Perfiles: <?php echo count($perfiles); ?></div>
 
         <div class="top-left-title">Cyber<br>Angel<br>.mp3</div>
 
@@ -534,14 +547,19 @@
             <button class="action-button-left" onclick="handleMatch('match')" title="Match!"></button>
 
             <div class="deck-container" id="card-deck">
-                <div class="profile-card"></div>
-                <div class="profile-card"></div>
-                <div class="profile-card"></div>
+                <?php foreach ($perfiles as $index =>$p): ?>
+                    <div class="profile-card" style="background-image: url('<?php echo htmlspecialchars($p['imagen']); ?>'); z-index: <?php echo count($perfiles) -$index; ?>; transform: rotate(<?php echo ($index * 3) - 3; ?>deg) translate(<?php echo$index * 5; ?>px, <?php echo $index * 4; ?>px); filter: brightness(<?php echo 1 - ($index * 0.2); ?>);"></div>
+                <?php endforeach; ?>
             </div>
 
             <button class="action-button-right" onclick="handleMatch('nomatch')" title="No Match!"></button>
+        </div>
 
-            <div class="motivational-popup" id="popupMessage">la próxima será amorrchhh 💋</div>
+        <div class="screen-kiss-overlay" id="screenKissOverlay">
+            <div class="giant-screen-kiss">
+                💋
+                <div class="kiss-text">¡Muuuua! La próxima será, amigx</div>
+            </div>
         </div>
 
         <div class="match-success-overlay" id="matchSuccessOverlay">
@@ -567,13 +585,9 @@
                                     <feComposite in="SourceGraphic" in2="blur" operator="over" />
                                 </filter>
                             </defs>
-                           
                             <path d="M 50 88 C 20 65, 5 45, 5 28 C 5 12, 18 3, 33 3 C 42 3, 47 8, 50 14 C 53 8, 58 3, 67 3 C 82 3, 95 12, 95 28 C 95 45, 80 65, 50 88 Z" fill="url(#pinkGloss)" stroke="#ffffff" stroke-width="3" filter="url(#glowEffect)" />
-                            
                             <path d="M 22 18 C 16 26, 16 34, 22 40" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.7" />
-                            
                             <path d="M 75 18 L 78 25 L 85 28 L 78 31 L 75 38 L 72 31 L 65 28 L 72 25 Z" fill="#ffee00" stroke="#ffffff" stroke-width="1" />
-                            
                             <path d="M 24 64 L 26 69 L 31 71 L 26 73 L 24 78 L 22 73 L 17 71 L 22 69 Z" fill="#ffee00" stroke="#ffffff" stroke-width="1" />
                         </svg>
                     </div>
@@ -595,74 +609,29 @@
     </div>
     
     <div class="bottom-bar">
-        <button class="nav-item" id="profile-btn" title="Clic izq: Volver al Home | Clic der: Perfil">
+        <button class="nav-item" onclick="window.location.href='perfil.php'" title="Perfil">
             <img src="../img/perfil.jfif" alt="Perfil">
         </button>
-        
-        <button class="nav-item active" id="match-btn" title="Match">
+        <button class="nav-item active" onclick="window.location.href='match.php'" title="Match">
             <img src="../img/match.jfif" alt="Match">
         </button>
-        <button class="nav-item" id="add-btn" title="Agregar">
+        <button class="nav-item" onclick="window.location.href='agregar.php'" title="Agregar">
             <img src="../img/simbolomas.jfif" alt="Agregar">
         </button>
-        <button class="nav-item" id="messages-btn" title="Mensajes">
+        <button class="nav-item" onclick="window.location.href='mensajes.php'" title="Mensajes">
             <img src="../img/mensajes.jfif" alt="Mensajes">
         </button>
-        <button class="nav-item" id="notifications-btn" title="Notificaciones">
+        <button class="nav-item" onclick="window.location.href='notificaciones.php'" title="Notificaciones">
             <img src="../img/notificaciones.jfif" alt="Notificaciones">
         </button>
     </div>
 
     <script>
-        const profileBtn = document.getElementById('profile-btn');
-
-        if (profileBtn) {
-            profileBtn.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-            });
-
-            profileBtn.addEventListener('mousedown', function(e) {
-                if (e.button === 0) {
-                    window.location.href = 'home.html'; 
-                } else if (e.button === 2) {
-                    window.location.href = 'perfil.html';
-                }
-            });
-        }
-
-        const matchBtn = document.getElementById('match-btn');
-        if (matchBtn) {
-            matchBtn.addEventListener('click', function() {
-                window.location.href = 'match.html';
-            });
-        }
-
-        const addBtn = document.getElementById('add-btn');
-        if (addBtn) {
-            addBtn.addEventListener('click', function() {
-                window.location.href = 'agregar.html';
-            });
-        }
-
-        const messagesBtn = document.getElementById('messages-btn');
-        if (messagesBtn) {
-            messagesBtn.addEventListener('click', function() {
-                window.location.href = 'mensajes.html';
-            });
-        }
-
-        const notificationsBtn = document.getElementById('notifications-btn');
-        if (notificationsBtn) {
-            notificationsBtn.addEventListener('click', function() {
-                window.location.href = 'notificaciones.html';
-            });
-        }
-
         function handleMatch(type) {
             const deck = document.getElementById('card-deck');
             const topCard = deck.querySelector('.profile-card');
             const glow = document.getElementById('screenGlow');
-            const popup = document.getElementById('popupMessage');
+            const kissOverlay = document.getElementById('screenKissOverlay');
             const counterBadge = document.getElementById('counterBadge');
             const matchOverlay = document.getElementById('matchSuccessOverlay');
             
@@ -694,14 +663,12 @@
                     topCard.style.transform = 'translateX(-250px) rotate(-25deg)';
                     topCard.style.opacity = '0';
 
-                    popup.classList.add('show');
+                    kissOverlay.classList.add('active');
+                    
                     setTimeout(() => {
-                        popup.classList.remove('show');
-                    }, 1400);
-
-                    setTimeout(() => {
+                        kissOverlay.classList.remove('active');
                         removeCardAndCheck(topCard, counterBadge, deck);
-                    }, 400);
+                    }, 1400);
                 }
             }
         }
@@ -720,7 +687,7 @@
         }
 
         function removeCardAndCheck(card, badge, deck) {
-            card.remove();
+            if (card) card.remove();
             const remaining = deck.children.length;
             badge.textContent = `Perfiles: ${remaining}`;
             

@@ -1,3 +1,13 @@
+<?php
+
+$notificaciones = [
+    "Maliiittteee comenzó a seguirte",
+    "Lauuuraaa te envió un post",
+    "Azzzuuuuumyyy envió un mensaje",
+    "Azzzuuuuumyyy dio like a tu último post",
+    "Sooofiiiaaaaaa envió solicitud de MATCH!"
+];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -181,11 +191,9 @@
         <div class="bg-decor-text t4">NEW NOTIFICATIONS !!!<br>Diva 💋</div>
 
         <div class="notifications-list">
-            <div class="notification-card">Maliiittteee comenzó a seguirte</div>
-            <div class="notification-card">Lauuuraaa te envió un post</div>
-            <div class="notification-card">Azzzuuuuumyyy envió un mensaje</div>
-            <div class="notification-card">Azzzuuuuumyyy dio like a tu último post</div>
-            <div class="notification-card">Sooofiiiaaaaaa envió solicitud de MATCH!</div>
+            <?php foreach ($notificaciones as $notif): ?>
+                <div class="notification-card"><?php echo htmlspecialchars($notif); ?></div>
+            <?php endforeach; ?>
         </div>
     </div>
 
@@ -216,9 +224,9 @@
 
             profileBtn.addEventListener('mousedown', function(e) {
                 if (e.button === 0) {
-                    window.location.href = 'home.html'; 
+                    window.location.href = 'home.php'; 
                 } else if (e.button === 2) {
-                    window.location.href = 'perfil.html';
+                    window.location.href = 'perfil.php';
                 }
             });
         }
@@ -226,28 +234,28 @@
         const matchBtn = document.getElementById('match-btn');
         if (matchBtn) {
             matchBtn.addEventListener('click', function() {
-                window.location.href = 'match.html';
+                window.location.href = 'match.php';
             });
         }
 
         const addBtn = document.getElementById('add-btn');
         if (addBtn) {
             addBtn.addEventListener('click', function() {
-                window.location.href = 'agregar.html';
+                window.location.href = 'agregar.php';
             });
         }
 
         const messagesBtn = document.getElementById('messages-btn');
         if (messagesBtn) {
             messagesBtn.addEventListener('click', function() {
-                window.location.href = 'mensajes.html';
+                window.location.href = 'mensajes.php';
             });
         }
 
         const notificationsBtn = document.getElementById('notifications-btn');
         if (notificationsBtn) {
             notificationsBtn.addEventListener('click', function() {
-                window.location.href = 'notificaciones.html';
+                window.location.href = 'notificaciones.php';
             });
         }
 

@@ -28,7 +28,6 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) translateY(20px) rotate(180deg); }
         }
 
-        
         .falling-item {
             position: fixed;
             top: -50px;
@@ -155,21 +154,13 @@
 
     <audio id="intro-audio" src="img/introcancion.mp3" preload="auto"></audio>
 
-    
     <div id="loader-screen">
         <div class="loader-top-left">Cyber<br>Angel<br>.mp3</div>
         <img src="img/logo.png" alt="Logo Cyber Angel" class="loader-logo">
         <div class="loader-bar-container" id="block-container">
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
-            <div class="loader-block"></div>
+            <?php for ($i = 0; $i < 10; $i++): ?>
+                <div class="loader-block"></div>
+            <?php endfor; ?>
         </div>
         <div class="loader-percentage" id="loader-perc">0% complete</div>
         <button id="load-btn" onclick="startLoadingProcess()">Cargar</button>
@@ -207,7 +198,7 @@
                     setTimeout(() => {
                         loaderScreen.style.opacity = '0';
                         setTimeout(() => {
-                            window.location.href = 'index.html';
+                            window.location.href = 'login.php';
                         }, 1000);
                     }, 400);
                 }
