@@ -152,7 +152,7 @@ if ($pdo) {
             z-index: 2;
         }
 
-        /* Contenedor Flex para centrar perfectamente el título */
+        
         .title-wrapper {
             display: flex;
             justify-content: center;

@@ -1,5 +1,5 @@
 <?php
-// Configuración de la Base de Datos
+
 $host = "localhost";
 $dbname = "crud_database";
 $username = "root";
@@ -15,7 +15,7 @@ try {
 $editando = false;
 $id = $first = $last = $email = $phone = $location = $rol = "";
 
-// 1. CREAR (Insertar registro)
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['accion']) && $_POST['accion'] == 'crear') {
     $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, phone, location, rol) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([$_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['phone'], $_POST['location'], $_POST['rol']]);
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['accion']) && $_POST['a
     exit();
 }
 
-// 2. ACTUALIZAR (Guardar cambios)
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['accion']) && $_POST['accion'] == 'actualizar') {
     $stmt = $pdo->prepare("UPDATE users SET first_name=?, last_name=?, email=?, phone=?, location=?, rol=? WHERE id=?");
     $stmt->execute([$_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['phone'], $_POST['location'], $_POST['rol'], $_POST['id']]);
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['accion']) && $_POST['a
     exit();
 }
 
-// 3. ELIMINAR
+
 if (isset($_GET['eliminar'])) {
     $stmt = $pdo->prepare("DELETE FROM users WHERE id=?");
     $stmt->execute([$_GET['eliminar']]);
@@ -39,7 +39,7 @@ if (isset($_GET['eliminar'])) {
     exit();
 }
 
-// CARGAR DATOS PARA EDITAR
+
 if (isset($_GET['editar'])) {
     $editando = true;
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id=?");
@@ -56,7 +56,7 @@ if (isset($_GET['editar'])) {
     }
 }
 
-// EXPORTAR A CSV (Botón Download CSV)
+
 if (isset($_GET['exportar']) && $_GET['exportar'] == 'csv') {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename=crud_data.csv');
@@ -71,7 +71,7 @@ if (isset($_GET['exportar']) && $_GET['exportar'] == 'csv') {
     exit();
 }
 
-// LEER (Listar todos los registros)
+
 $usuarios = $pdo->query("SELECT * FROM users ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -101,7 +101,7 @@ $usuarios = $pdo->query("SELECT * FROM users ORDER BY id DESC")->fetchAll(PDO::F
 
     <h1>CRUD Database</h1>
 
-    <!-- FORMULARIO PARA AGREGAR / EDITAR -->
+    
     <div class="form-container">
         <h3><?php echo $editando ? 'Editar Registro' : 'Agregar Nuevo Item'; ?></h3>
         <form action="crud.php" method="POST">
@@ -124,7 +124,7 @@ $usuarios = $pdo->query("SELECT * FROM users ORDER BY id DESC")->fetchAll(PDO::F
         </form>
     </div>
 
-    <!-- TABLA PRINCIPAL -->
+  
     <table>
         <thead>
             <tr>
@@ -161,7 +161,7 @@ $usuarios = $pdo->query("SELECT * FROM users ORDER BY id DESC")->fetchAll(PDO::F
         </tbody>
     </table>
 
-    <!-- BOTONES INFERIORES -->
+    
     <a href="crud.php?exportar=csv" class="btn btn-csv">Download CSV</a>
 
 </body>

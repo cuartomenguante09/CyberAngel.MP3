@@ -4,10 +4,10 @@ $dbname = "cyber_angel_db";
 $username = "root";
 $password = "";
 
-// Obtener el identificador de usuario de la URL
+
 $usuario_id = isset($_GET['user']) ? strtolower(trim($_GET['user'])) : 'maite';
 
-// Configurar los datos y chats específicos según el contacto por defecto (Sofi)
+
 $contacto = [
     'nombre_contacto' => 'Sofi',
     'avatar' => '../img/perfil.jfif',
@@ -57,7 +57,7 @@ if ($usuario_id === 'maite') {$contacto = [
             }
         }
     } catch (PDOException $e) {
-        // Silencioso si falla la BD
+        
     }
 }
 ?>
@@ -351,8 +351,7 @@ if ($usuario_id === 'maite') {$contacto = [
 <body>
 
     <div class="fullscreen-chat">
-        
-        <!-- Cabecera -->
+       
         <div class="chat-header">
             <div class="chat-header-left">
                 <a href="mensajes.php" class="back-btn" title="Volver">◀</a>
@@ -361,7 +360,7 @@ if ($usuario_id === 'maite') {$contacto = [
             </div>
         </div>
 
-        <!-- Mensajes del Chat -->
+        
         <div class="chat-body" id="chatBody">
             <?php foreach ($contacto['mensajes'] as$msg): ?>
                 <?php if (isset($msg['tipo_contenido']) &&$msg['tipo_contenido'] === 'sticker'): ?>
@@ -376,7 +375,7 @@ if ($usuario_id === 'maite') {$contacto = [
             <?php endforeach; ?>
         </div>
 
-        <!-- Barra para escribir -->
+      
         <div class="chat-input-bar">
             <input type="text" id="messageInput" placeholder="Escribe un mensaje kawaii...">
             <button class="send-btn" id="sendBtn" title="Enviar">
@@ -386,7 +385,7 @@ if ($usuario_id === 'maite') {$contacto = [
 
     </div>
 
-    <!-- Barra de navegación inferior -->
+
     <div class="bottom-bar">
         <button class="nav-item" onclick="window.location.href='perfil.php'" title="Perfil">
             <img src="../img/perfil.jfif" alt="Perfil">
@@ -431,7 +430,7 @@ if ($usuario_id === 'maite') {$contacto = [
 
         chatBody.scrollTop = chatBody.scrollHeight;
 
-        // Efectos Y2K visuales
+        
         const Y2K_ITEMS = [
             `<svg viewBox="0 0 24 24" fill="#ff007f"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
             `<svg viewBox="0 0 24 24" fill="#ffb6c1"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,

@@ -11,7 +11,7 @@ try {
     $stmt =$pdo->query("SELECT * FROM mensajes ORDER BY id DESC");
     $chats =$stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Manejo silencioso de error si la base de datos no responde
+    
 }
 ?>
 <!DOCTYPE html>
@@ -95,10 +95,10 @@ try {
             color: #000000;
         }
 
-        /* Pantalla completa de mensajes */
+        
         .fullscreen-messages {
             width: 100vw;
-            height: calc(100vh - 56px); /* Restamos la barra de navegación inferior */
+            height: calc(100vh - 56px); 
             background: #000000;
             position: relative;
             display: flex;
@@ -153,7 +153,7 @@ try {
             opacity: 0.9;
         }
 
-        /* Lista de chats con scroll propio */
+        
         .chat-list-scroll {
             flex-grow: 1;
             overflow-y: auto;
@@ -274,7 +274,7 @@ try {
             font-family: 'Courier New', monospace;
         }
 
-        /* Barra de navegación inferior fija */
+        
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -376,7 +376,7 @@ try {
 
     </div>
 
-    <!-- Barra de navegación inferior conectada a perfil.php -->
+    
     <div class="bottom-bar">
         <button class="nav-item" onclick="window.location.href='perfil.php'" title="Perfil">
             <img src="../img/perfil.jfif" alt="Perfil">
@@ -396,7 +396,7 @@ try {
     </div>
 
     <script>
-        // Buscador de chats en tiempo real
+        
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
@@ -412,7 +412,7 @@ try {
             });
         });
 
-        // Efectos de estrellas y brillos Y2K
+        
         const Y2K_ITEMS = [
             `<svg viewBox="0 0 24 24" fill="#ff007f"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
             `<svg viewBox="0 0 24 24" fill="#ffb6c1"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,

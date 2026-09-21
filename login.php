@@ -1,5 +1,5 @@
 <?php
-// Conexión a la base de datos (ajustá el archivo de conexión si el tuyo se llama distinto)
+
 require_once 'conexion.php';
 
 $mensaje = '';
@@ -9,12 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password'] ?? '');
 
     if (!empty($usuario) && !empty($password)) {
-        // Insertamos los datos en tu tabla de MySQL
+        
         $sql = "INSERT INTO usuarios (usuario, password) VALUES (:usuario, :password)";
         $stmt = $pdo->prepare($sql);
         
         if ($stmt->execute(['usuario' => $usuario, 'password' => $password])) {
-            // Si se guarda bien, redirige a home.php dentro de views
+            
             header("Location: views/home.php");
             exit();
         } else {
@@ -411,7 +411,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <img src="img/login-title.jpg" alt="LOG IN" class="login-title-img">
             </div>
 
-            <!-- Formulario conectado a PHP con method POST -->
+            
             <form class="login-form" id="loginForm" action="login.php" method="POST">
                 <div class="input-box">
                     <input type="text" name="usuario" id="userInput" placeholder="email ID or Username" class="login-input" required>

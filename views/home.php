@@ -9,14 +9,13 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Consultar la última publicación subida
     $stmt = $pdo->query("SELECT * FROM publicaciones ORDER BY id DESC LIMIT 1");
     $ultima_pub = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Manejo silencioso si la base de datos aún no está conectada o la tabla no existe
+    
 }
 
-// Valores por defecto si aún no hay publicaciones
+
 $imagen_mostrar = ($ultima_pub && !empty($ultima_pub['imagen'])) ? '../img/uploads/' . $ultima_pub['imagen'] : '../img/banner7.jfif';
 $caption_mostrar = ($ultima_pub && !empty($ultima_pub['caption'])) ? $ultima_pub['caption'] : 'born to be an absolute iconic diva';
 $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood'] : 'angel';
@@ -577,7 +576,7 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
             transform: scale(0.95);
         }
 
-        /* Estilo para el botón flotante en la esquina inferior izquierda */
+       
         .crud-corner-btn {
             position: fixed;
             bottom: 65px;
@@ -749,7 +748,7 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
 
     </div>
 
-    <!-- BOTÓN FLOTANTE CRUD EN LA ESQUINA INFERIOR IZQUIERDA -->
+    
     <div class="crud-corner-btn">
         <div class="crud-corner-titlebar">
             <span>db.exe</span>
