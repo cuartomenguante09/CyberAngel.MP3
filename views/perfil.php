@@ -12,26 +12,53 @@ try {
 }
 
 $mensaje_exito = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     $nuevo_nombre = $_POST['nombre'] ?? '';
     $nueva_edad = $_POST['edad'] ?? '';
     $nuevo_bio = $_POST['bio'] ?? '';
+    $nuevo_mood = $_POST['mood'] ?? '';
+
+    if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['avatar_file']['tmp_name'];
+        $fileName = $_FILES['avatar_file']['name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        $newFileName = 'avatar_' . time() . '.' . $fileExtension;
+        $uploadFileDir = '../img/';
+        $dest_path = $uploadFileDir . $newFileName;
+
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $nuevo_avatar = $dest_path;
+        } else {
+            $nuevo_avatar = $_POST['avatar_actual'] ?? '../img/perfil.jfif';
+        }
+    } else {
+        $nuevo_avatar = $_POST['avatar_actual'] ?? '../img/perfil.jfif';
+    }
 
     try {
-        $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, edad = ?, bio = ? WHERE id = 1");
-        $stmt->execute([$nuevo_nombre, $nueva_edad, $nuevo_bio]);
+        $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, edad = ?, bio = ?, mood = ?, avatar = ? WHERE id = 1");
+        $stmt->execute([$nuevo_nombre, $nueva_edad, $nuevo_bio, $nuevo_mood, $nuevo_avatar]);
         $mensaje_exito = "¡Perfil actualizado con éxito!";
     } catch (Exception $e) {
         $mensaje_exito = "Error al actualizar.";
     }
 }
 
-$usuario = ['nombre' => 'Angel', 'edad' => 17, 'bio' => 'I love: ME'];
+$usuario = [
+    'nombre' => 'Angel', 
+    'edad' => 17, 
+    'bio' => 'I love: ME', 
+    'mood' => 'divaa <3',
+    'avatar' => '../img/perfil.jfif'
+];
+
 if ($pdo) {
     $query = $pdo->query("SELECT * FROM usuarios LIMIT 1");
     $resultado = $query->fetch(PDO::FETCH_ASSOC);
     if ($resultado) {
-        $usuario = $resultado;
+        $usuario = array_merge($usuario, $resultado);
     }
 }
 ?>
@@ -41,6 +68,8 @@ if ($pdo) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel - Perfil</title>
+    <link rel="icon" type="image/png" href="../img/logo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
     <style>
         *, body, a, button, select, input, textarea {
@@ -202,6 +231,28 @@ if ($pdo) {
         .profile-img-wrap { position: relative; width: 100%; }
         .profile-img { width: 100%; height: 250px; object-fit: cover; border: 2px solid #ff007f; display: block; }
         
+        .change-avatar-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #ff007f;
+            color: #ff66b2;
+            font-family: 'Slackey', cursive;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 10;
+        }
+
+        .change-avatar-btn:hover {
+            background: #ff007f;
+            color: #ffffff;
+            box-shadow: 0 0 8px #ff007f;
+        }
+
         .match-badge {
             position: absolute;
             bottom: 8px;
@@ -263,9 +314,7 @@ if ($pdo) {
             transition: transform 0.2s;
         }
 
-        .friend-avatar:hover {
-            transform: scale(1.1) rotate(3deg);
-        }
+        .friend-avatar:hover { transform: scale(1.1) rotate(3deg); }
 
         .friend-name {
             font-family: 'Slackey', cursive;
@@ -307,18 +356,10 @@ if ($pdo) {
             width: 100%;
         }
 
-        .form-edit button:hover {
-            background: #ff66b2;
-        }
+        .form-edit button:hover { background: #ff66b2; }
 
         .youtube-hidden {
-            width: 1px;
-            height: 1px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            opacity: 0.01;
-            overflow: hidden;
+            width: 1px; height: 1px; position: absolute; bottom: 0; left: 0; opacity: 0.01; overflow: hidden;
         }
 
         .bottom-nav {
@@ -351,24 +392,17 @@ if ($pdo) {
         }
 
         .nav-btn img {
-            width: 36px;
-            height: 36px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid #ff007f;
-            box-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
-            pointer-events: none;
+            width: 36px; height: 36px; object-fit: cover; border-radius: 50%; border: 2px solid #ff007f; box-shadow: 0 0 8px rgba(255, 0, 127, 0.6); pointer-events: none;
         }
 
         .nav-btn:hover { transform: scale(1.15) translateY(-2px); filter: drop-shadow(0 0 8px #ff007f); }
-        .nav-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <div class="top-navbar">
         <div class="top-nav-left">
-            <img src="../img/perfil.jfif" alt="Avatar">
+            <img src="<?php echo htmlspecialchars($usuario['avatar']); ?>" alt="Avatar" onerror="this.src='../img/perfil.jfif';">
             <span><?php echo htmlspecialchars($usuario['nombre']); ?></span>
         </div>
         <div class="top-nav-right">
@@ -385,10 +419,11 @@ if ($pdo) {
                 
                 <div class="box-card" style="padding: 6px;">
                     <div class="profile-img-wrap">
-                        <img src="../img/perfil.jfif" class="profile-img" alt="Angel">
+                        <button type="button" class="change-avatar-btn" onclick="document.getElementById('avatar_file_input').click();">📷 cambiar foto</button>
+                        <img src="<?php echo htmlspecialchars($usuario['avatar']); ?>" class="profile-img" alt="Angel" id="preview-avatar" onerror="this.src='../img/perfil.jfif';">
                         <div class="match-badge">MATCH</div>
                     </div>
-                    <div style="margin-top: 8px; font-size: 12px; color: #ff66b2; text-align: center;">mood: divaa &lt;3</div>
+                    <div style="margin-top: 8px; font-size: 12px; color: #ff66b2; text-align: center;">mood: <?php echo htmlspecialchars($usuario['mood']); ?></div>
                 </div>
 
                 <div class="header-tag zebra-tag" style="text-align: center; font-size: 13px;">
@@ -431,12 +466,19 @@ if ($pdo) {
                         <div style="background: #ff007f; color: #fff; padding: 4px; font-size: 10px; text-align: center; margin-bottom: 6px;"><?php echo $mensaje_exito; ?></div>
                     <?php endif; ?>
 
-                    <form action="perfil.php" method="POST">
+                    <form action="perfil.php" method="POST" enctype="multipart/form-data">
+                        <!-- Input oculto para seleccionar archivo de foto -->
+                        <input type="file" id="avatar_file_input" name="avatar_file" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                        <input type="hidden" name="avatar_actual" value="<?php echo htmlspecialchars($usuario['avatar']); ?>">
+
                         <label style="color: #ff66b2; font-weight: bold;">Name:</label>
                         <input type="text" name="nombre" value="<?php echo htmlspecialchars($usuario['nombre']); ?>" required>
 
                         <label style="color: #ff66b2; font-weight: bold;">Age:</label>
                         <input type="number" name="edad" value="<?php echo htmlspecialchars($usuario['edad']); ?>" required>
+
+                        <label style="color: #ff66b2; font-weight: bold;">Mood:</label>
+                        <input type="text" name="mood" value="<?php echo htmlspecialchars($usuario['mood'] ?? 'divaa <3'); ?>" required>
 
                         <label style="color: #ff66b2; font-weight: bold;">About Me / Bio:</label>
                         <textarea name="bio" rows="2" required><?php echo htmlspecialchars($usuario['bio']); ?></textarea>
@@ -459,7 +501,6 @@ if ($pdo) {
                 <div>
                     <div class="header-tag">musica // my_profile_playlist.mp3</div>
                     <div class="box-card" style="padding: 8px;">
-                        
                         <div style="display: flex; gap: 10px; align-items: center; background: #0a0a0a; border: 2px solid #ff007f; padding: 8px; box-shadow: 2px 2px 0px #ff007f; margin-bottom: 8px;">
                             <img id="player-cover" src="../img/cancion.jfif" alt="Cover" style="width: 65px; height: 65px; object-fit: cover; border: 2px solid #ff007f;">
                             <div style="flex-grow: 1; overflow: hidden;">
@@ -472,7 +513,7 @@ if ($pdo) {
                         </div>
                         
                         <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', '../img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15) '">
+                            <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', '../img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
                                 <img src="../img/cancion.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="1">
                                 <div style="font-size: 10px; line-height: 1.1;">
                                     <span style="color: #ffffff; font-weight: bold;">Genie in a Bottle</span><br>
@@ -567,6 +608,17 @@ if ($pdo) {
       document.getElementById('player-artist').innerText = artist;
     }
 
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            const output = document.getElementById('preview-avatar');
+            if (output) output.src = reader.result;
+        };
+        if (event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
     document.getElementById('profile-btn').addEventListener('click', () => {
         window.location.href = 'perfil.php';
     });
@@ -619,5 +671,6 @@ if ($pdo) {
         }
     });
     </script>
+    <?php include '../cookies.php'; ?>
 </body>
 </html>

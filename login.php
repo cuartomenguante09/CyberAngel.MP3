@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>CyberAngel.MP3 - Log In</title>
+    <link rel="icon" type="image/png" href="../img/logo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
     <style>
         *, body, a, button, select, input {
@@ -221,6 +223,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #fff;
             transform: scale(1.05);
         }
+        .forgot-link {
+            color: #ffb6c1;
+            font-size: 11px;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 2px;
+            transition: color 0.2s;
+        }
+        .forgot-link:hover {
+            color: #ff007f;
+        }
         .separator {
             color: #ffb6c1;
             font-size: 12px;
@@ -388,10 +401,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </button>
                 </div>
                 <button type="submit" class="login-submit-btn">ENTER</button>
+
+                
+                <span class="forgot-link" onclick="openForgotModal()">¿no te acordas la contraseña?:( que mal</span>
+
                 <?php if (!empty($mensaje)): ?>
                     <div style="color: #ff3366; font-size: 11px; margin-top: 5px;"><?php echo htmlspecialchars($mensaje); ?></div>
                 <?php endif; ?>
-                <div class="separator">- or continue with -</div>
+
+                <div class="separator">or continue with</div>
                 <div class="social-container">
                     <div class="social-box" onclick="socialLogin('WhatsApp')"><img src="img/whatsapp.jfif" alt="WhatsApp"></div>
                     <div class="social-box" onclick="socialLogin('Google')"><img src="img/google.jfif" alt="Google"></div>
@@ -400,6 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </div>
+
     <div class="bottom-bar">
         <button class="nav-item" title="Perfil (Index)" onclick="window.location.href='views/perfil.php'">
             <img src="img/perfil.jfif" alt="Perfil">
@@ -417,6 +436,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="img/notificaciones.jfif" alt="Notificaciones">
         </button>
     </div>
+
+    
+    <div class="custom-modal-overlay" id="forgotModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <span class="custom-modal-title">RECUPERAR CONTRASEÑA 💔</span>
+                <div class="os-btn" onclick="closeForgotModal()"><span class="btn-close">×</span></div>
+            </div>
+            <div class="custom-modal-body">
+                <p style="margin-bottom: 15px; font-size: 12px; line-height: 1.4;">
+                    ¿no te acordas la contraseña?:( que mal<br>
+                    <span style="color: #ff007f; font-size: 11px;">Ingresá tu correo electrónico para enviarte un link de recuperación:</span>
+                </p>
+                <input type="email" id="recoveryEmailInput" placeholder="tu_email@ejemplo.com" class="login-input" style="width: 100%; font-size: 11px; margin-bottom: 10px;" required>
+                
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="custom-modal-btn" onclick="closeForgotModal()" style="background: transparent; color: #ffb6c1; border-color: #ffb6c1;">CANCELAR</button>
+                    <button class="custom-modal-btn" onclick="sendRecoveryEmail()">ENVIAR LINK ✨</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="custom-modal-overlay" id="customModal">
         <div class="custom-modal">
             <div class="custom-modal-header">
@@ -429,6 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('passwordField');
@@ -438,16 +481,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 passwordInput.type = 'password';
             }
         }
+
         function showCustomAlert(message) {
             document.getElementById('modalMessage').innerText = message;
             document.getElementById('customModal').classList.add('active');
         }
+
         function closeCustomAlert() {
             document.getElementById('customModal').classList.remove('active');
         }
+
+        function openForgotModal() {
+            document.getElementById('forgotModal').classList.add('active');
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').classList.remove('active');
+        }
+
+        function sendRecoveryEmail() {
+            const email = document.getElementById('recoveryEmailInput').value.trim();
+            if (email !== '') {
+                closeForgotModal();
+                showCustomAlert('¡Listo! Te enviamos las instrucciones de recuperación a ' + email + ' 💖✨');
+                document.getElementById('recoveryEmailInput').value = '';
+            } else {
+                alert('Por favor, ingresá un correo electrónico válido. <3');
+            }
+        }
+
         function socialLogin(provider) {
             showCustomAlert('Conectando con ' + provider + '...');
         }
+
         function minimizeWindow() {
             const windowEl = document.querySelector('.os-window');
             windowEl.style.transform = 'scale(0)';
@@ -456,6 +522,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 showCustomAlert('Ventana minimizada. Recarga la página para restaurarla.');
             }, 300);
         }
+
         function maximizeWindow() {
             const windowEl = document.querySelector('.os-window');
             if (windowEl.style.width === '90vw') {
@@ -464,6 +531,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 windowEl.style.width = '90vw';
             }
         }
+
         function closeWindow() {
             showCustomAlert('Acción no permitida en esta DEMO');
         }

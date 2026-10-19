@@ -14,6 +14,7 @@ $notificaciones = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel - Notificaciones</title>
+    <link rel="icon" type="image/png" href="../img/logo.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Slackey&display=swap" rel="stylesheet">
     <style>
@@ -275,5 +276,6 @@ $notificaciones = [
             }
         });
     </script>
+      <?php include 'cookies.php'; ?>
 </body>
 </html>

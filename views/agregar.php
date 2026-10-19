@@ -51,6 +51,7 @@ if ($pdo) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel - Añadir Publicación</title>
+    <link rel="icon" type="image/png" href="../img/logo.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -558,5 +559,6 @@ if ($pdo) {
             }
         });
     </script>
+    <?php include 'cookies.php'; ?>
 </body>
 </html>
