@@ -6,14 +6,16 @@ $password = "";
 
 $perfiles = [];
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    $stmt =$pdo->query("SELECT * FROM match_perfiles");
-    $perfiles =$stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $pdo->query("SELECT * FROM match_perfiles ORDER BY RAND()");
+    $perfiles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
 }
 
-if (empty($perfiles)) {$perfiles = [
+if (empty($perfiles)) {
+    $perfiles = [
         ['id' => 1, 'nombre' => 'Alex', 'imagen' => '../img/matchperfil.jpg'],
         ['id' => 2, 'nombre' => 'Valentina', 'imagen' => '../img/perfil.jfif'],
         ['id' => 3, 'nombre' => 'Dante', 'imagen' => '../img/matchperfil.jpg']
@@ -548,8 +550,8 @@ if (empty($perfiles)) {$perfiles = [
             <button class="action-button-left" onclick="handleMatch('match')" title="Match!"></button>
 
             <div class="deck-container" id="card-deck">
-                <?php foreach ($perfiles as $index =>$p): ?>
-                    <div class="profile-card" style="background-image: url('<?php echo htmlspecialchars($p['imagen']); ?>'); z-index: <?php echo count($perfiles) -$index; ?>; transform: rotate(<?php echo ($index * 3) - 3; ?>deg) translate(<?php echo$index * 5; ?>px, <?php echo $index * 4; ?>px); filter: brightness(<?php echo 1 - ($index * 0.2); ?>);"></div>
+                <?php foreach ($perfiles as $index => $p): ?>
+                    <div class="profile-card" style="background-image: url('<?php echo htmlspecialchars($p['imagen']); ?>'); z-index: <?php echo count($perfiles) - $index; ?>; transform: rotate(<?php echo ($index * 3) - 3; ?>deg) translate(<?php echo $index * 5; ?>px, <?php echo $index * 4; ?>px); filter: brightness(<?php echo 1 - ($index * 0.2); ?>);"></div>
                 <?php endforeach; ?>
             </div>
 
@@ -601,7 +603,7 @@ if (empty($perfiles)) {$perfiles = [
                     <input type="text" class="match-chat-input" readonly value="¡Hola! Me encantó tu perfil :3">
                     <div class="match-buttons-row">
                         <button class="y2k-btn" onclick="sendGreeting()">Enviar Mensaje</button>
-                        <button class="y2k-btn secondary" onclick="closeMatchScreen()">Continuar</button>
+                        <button class="y2k-btn secondary" onclick="window.location.href='perfil.php'">Ver Perfil</button>
                     </div>
                 </div>
             </div>
@@ -739,6 +741,6 @@ if (empty($perfiles)) {$perfiles = [
             }
         });
     </script>
-      <?php include 'cookies.php'; ?>
+    <?php include 'cookies.php'; ?>
 </body>
 </html>
