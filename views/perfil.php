@@ -1,4 +1,5 @@
 <?php
+session_start();
 $host = "localhost";
 $dbname = "cyber_angel_db";
 $username = "root";
@@ -13,12 +14,27 @@ try {
 
 $mensaje_exito = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
+// GESTIÓN DE ELIMINAR CUENTA
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar_cuenta' && $pdo) {
+    try {
+        $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = 1");
+        $stmt->execute();
+        session_destroy();
+        header("Location: ../login.php");
+        exit();
+    } catch (Exception $e) {
+        $mensaje_exito = "Error al eliminar la cuenta.";
+    }
+}
+
+// GESTIÓN DEL FORMULARIO POST (GUARDAR CAMBIOS Y/O FOTO)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo && !isset($_POST['accion'])) {
     $nuevo_nombre = $_POST['nombre'] ?? '';
     $nueva_edad = $_POST['edad'] ?? '';
     $nuevo_bio = $_POST['bio'] ?? '';
     $nuevo_mood = $_POST['mood'] ?? '';
 
+    // Manejo del archivo subido (Avatar)
     if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['avatar_file']['tmp_name'];
         $fileName = $_FILES['avatar_file']['name'];
@@ -46,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     }
 }
 
+// OBTENER DATOS DE LA BD
 $usuario = [
     'nombre' => 'Angel', 
     'edad' => 17, 
@@ -358,6 +375,59 @@ if ($pdo) {
 
         .form-edit button:hover { background: #ff66b2; }
 
+        .delete-account-btn {
+            background: #330011 !important;
+            border: 1px dashed #ff3366 !important;
+            color: #ff80aa !important;
+            margin-top: 8px;
+        }
+        .delete-account-btn:hover {
+            background: #ff3366 !important;
+            color: #fff !important;
+        }
+
+        /* MODAL RETRO DE ELIMINAR CUENTA */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .custom-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .custom-modal {
+            width: 340px;
+            max-width: 90vw;
+            background-color: #000000;
+            border: 3px solid #ff007f;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
+        }
+        .custom-modal-header {
+            background-color: #ff007f;
+            padding: 6px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            font-family: 'Slackey', cursive;
+            font-size: 11px;
+        }
+        .custom-modal-body {
+            padding: 20px;
+            text-align: center;
+            color: #ffb6c1;
+            font-size: 12px;
+        }
+
         .youtube-hidden {
             width: 1px; height: 1px; position: absolute; bottom: 0; left: 0; opacity: 0.01; overflow: hidden;
         }
@@ -467,7 +537,6 @@ if ($pdo) {
                     <?php endif; ?>
 
                     <form action="perfil.php" method="POST" enctype="multipart/form-data">
-                        <!-- Input oculto para seleccionar archivo de foto -->
                         <input type="file" id="avatar_file_input" name="avatar_file" accept="image/*" style="display: none;" onchange="previewImage(event)">
                         <input type="hidden" name="avatar_actual" value="<?php echo htmlspecialchars($usuario['avatar']); ?>">
 
@@ -485,6 +554,9 @@ if ($pdo) {
 
                         <button type="submit">GUARDAR CAMBIOS</button>
                     </form>
+
+                    <!-- BOTÓN ELIMINAR CUENTA -->
+                    <button type="button" class="delete-account-btn" onclick="openDeleteModal()">ELIMINAR CUENTA 💔</button>
                 </div>
 
                 <div>
@@ -557,6 +629,26 @@ if ($pdo) {
         </div>
     </div>
     
+    <!-- MODAL DE CONFIRMACIÓN PARA BORRAR CUENTA -->
+    <div class="custom-modal-overlay" id="deleteModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <span>AVISO DEL SISTEMA ⚠️</span>
+                <span style="cursor:pointer;" onclick="closeDeleteModal()">✕</span>
+            </div>
+            <div class="custom-modal-body">
+                <p style="margin-bottom: 15px; line-height: 1.4;">¿Estás segura de que querés eliminar tu cuenta para siempre?:(</p>
+                <form action="perfil.php" method="POST">
+                    <input type="hidden" name="accion" value="eliminar_cuenta">
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button type="button" onclick="closeDeleteModal()" style="background: transparent; border: 1px solid #ffb6c1; color: #ffb6c1; padding: 5px 12px; font-family: 'Slackey', cursive; font-size: 10px; cursor: pointer;">CANCELAR</button>
+                        <button type="submit" style="background: #ff007f; border: 1px solid #fff; color: #fff; padding: 5px 12px; font-family: 'Slackey', cursive; font-size: 10px; cursor: pointer;">SÍ, BORRAR</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="youtube-hidden">
         <div id="player"></div>
     </div>
@@ -617,6 +709,14 @@ if ($pdo) {
         if (event.target.files[0]) {
             reader.readAsDataURL(event.target.files[0]);
         }
+    }
+
+    function openDeleteModal() {
+        document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
     }
 
     document.getElementById('profile-btn').addEventListener('click', () => {

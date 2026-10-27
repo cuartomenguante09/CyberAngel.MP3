@@ -15,7 +15,6 @@ try {
     
 }
 
-
 $imagen_mostrar = ($ultima_pub && !empty($ultima_pub['imagen'])) ? '../img/uploads/' . $ultima_pub['imagen'] : '../img/banner7.jfif';
 $caption_mostrar = ($ultima_pub && !empty($ultima_pub['caption'])) ? $ultima_pub['caption'] : 'born to be an absolute iconic diva';
 $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood'] : 'angel';
@@ -111,7 +110,7 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
         body {
             margin: 0;
             padding: 0;
-            background-image: url('../img/fondo.jfif');
+            background-image: url('../img/fondonuevo.jpg');
             background-repeat: repeat;
             background-size: 600px auto;
             font-family: 'Comic Sans MS', 'Courier New', sans-serif;
@@ -577,7 +576,6 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
             transform: scale(0.95);
         }
 
-       
         .crud-corner-btn {
             position: fixed;
             bottom: 65px;
@@ -626,7 +624,6 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
         .crud-corner-link:active {
             transform: scale(0.95);
         }
-
     </style>
 </head>
 <body>
@@ -749,7 +746,6 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
         </div>
 
     </div>
-
     
     <div class="crud-corner-btn">
         <div class="crud-corner-titlebar">
@@ -1002,6 +998,6 @@ $mood_mostrar = ($ultima_pub && !empty($ultima_pub['mood'])) ? $ultima_pub['mood
       if(apiReady) updateUI();
     };
     </script>
-      <?php include 'cookies.php'; ?>
+    <?php include 'cookies.php'; ?>
 </body>
 </html>
