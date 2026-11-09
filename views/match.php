@@ -8,7 +8,7 @@ $perfiles = [];
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
     $stmt = $pdo->query("SELECT * FROM match_perfiles ORDER BY RAND()");
     $perfiles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -16,9 +16,15 @@ try {
 
 if (empty($perfiles)) {
     $perfiles = [
-        ['id' => 1, 'nombre' => 'Alex', 'imagen' => '../img/matchperfil.jpg'],
-        ['id' => 2, 'nombre' => 'Valentina', 'imagen' => '../img/perfil.jfif'],
-        ['id' => 3, 'nombre' => 'Dante', 'imagen' => '../img/matchperfil.jpg']
+        ['id' => 1, 'nombre' => 'Kamila', 'imagen' => '../img/kamila.jpg'],
+        ['id' => 2, 'nombre' => 'Nahi', 'imagen' => '../img/nahi.jpg'],
+        ['id' => 3, 'nombre' => 'May', 'imagen' => '../img/may.jpg'],
+        ['id' => 4, 'nombre' => 'Martin', 'imagen' => '../img/martin.jpg'],
+        ['id' => 5, 'nombre' => 'Jhonatan', 'imagen' => '../img/jhonatan.jpg'],
+        ['id' => 6, 'nombre' => 'Enrique', 'imagen' => '../img/enrique.jpg'],
+        ['id' => 7, 'nombre' => 'Rosi', 'imagen' => '../img/rosi.jpg'],
+        ['id' => 8, 'nombre' => 'Miriam', 'imagen' => '../img/miriam.jpg'],
+        ['id' => 9, 'nombre' => 'Matias', 'imagen' => '../img/matias.jpg']
     ];
 }
 ?>
@@ -29,9 +35,9 @@ if (empty($perfiles)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel - Match</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-    
+
     <style>
         *, body, a, button, select, input {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="%23ffb6c1" stroke="%23ff007f" stroke-width="1.5"><path d="M4.5 3.5L11.5 20.5L14.5 13.5L21.5 10.5L4.5 3.5Z"/></svg>'), auto !important;
@@ -79,8 +85,9 @@ if (empty($perfiles)) {
             margin: 0;
             padding: 0;
             background-image: url('../img/animal.jfif');
-            background-repeat: repeat;
-            background-size: 500px auto;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
             font-family: 'Courier New', monospace;
             color: #ffffff;
             min-height: 100vh;
@@ -527,7 +534,7 @@ if (empty($perfiles)) {
 <body>
 
     <div class="window-container">
-        
+
         <audio id="soundMatch" src="../img/sonido-de-brillo.mp3" preload="auto"></audio>
         <audio id="soundNoMatch" src="../img/mouse-click-sound.mp3" preload="auto"></audio>
 
@@ -551,7 +558,10 @@ if (empty($perfiles)) {
 
             <div class="deck-container" id="card-deck">
                 <?php foreach ($perfiles as $index => $p): ?>
-                    <div class="profile-card" style="background-image: url('<?php echo htmlspecialchars($p['imagen']); ?>'); z-index: <?php echo count($perfiles) - $index; ?>; transform: rotate(<?php echo ($index * 3) - 3; ?>deg) translate(<?php echo $index * 5; ?>px, <?php echo $index * 4; ?>px); filter: brightness(<?php echo 1 - ($index * 0.2); ?>);"></div>
+                    <div class="profile-card" 
+                         data-id="<?php echo htmlspecialchars($p['id']); ?>" 
+                         data-nombre="<?php echo htmlspecialchars($p['nombre']); ?>" 
+                         style="background-image: url('<?php echo htmlspecialchars($p['imagen']); ?>'); z-index: <?php echo count($perfiles) - $index; ?>; transform: rotate(<?php echo ($index * 3) - 3; ?>deg) translate(<?php echo $index * 5; ?>px, <?php echo $index * 4; ?>px); filter: brightness(<?php echo 1 - ($index * 0.2); ?>);"></div>
                 <?php endforeach; ?>
             </div>
 
@@ -571,10 +581,10 @@ if (empty($perfiles)) {
                     <span> ★ IT'S A MATCH! ★  :: CYBER ANGEL CONNECTION :: </span>
                 </div>
                 <h2 class="match-title">¡Nuevo Vínculo Encontrado!</h2>
-                
+
                 <div class="match-avatars-container">
                     <div class="avatar-circle" style="background-image: url('../img/perfil.jfif');"></div>
-                    
+
                     <div class="pixel-heart-beat">
                         <svg width="42" height="42" viewBox="0 0 100 100">
                             <defs>
@@ -595,7 +605,7 @@ if (empty($perfiles)) {
                         </svg>
                     </div>
 
-                    <div class="avatar-circle" style="background-image: url('../img/matchperfil.jpg');"></div>
+                    <div class="avatar-circle" id="matchedAvatar" style="background-image: url('');"></div>
                 </div>
 
                 <p class="match-subtitle">"Agregado a tus Top Friends ♫"</p>
@@ -603,14 +613,14 @@ if (empty($perfiles)) {
                     <input type="text" class="match-chat-input" readonly value="¡Hola! Me encantó tu perfil :3">
                     <div class="match-buttons-row">
                         <button class="y2k-btn" onclick="sendGreeting()">Enviar Mensaje</button>
-                        <button class="y2k-btn secondary" onclick="window.location.href='perfil.php'">Ver Perfil</button>
+                        <button class="y2k-btn secondary" onclick="viewMatchedProfile()">Ver Perfil</button>
                     </div>
                 </div>
             </div>
         </div>
 
     </div>
-    
+
     <div class="bottom-bar">
         <button class="nav-item" onclick="window.location.href='perfil.php'" title="Perfil">
             <img src="../img/perfil.jfif" alt="Perfil">
@@ -630,6 +640,8 @@ if (empty($perfiles)) {
     </div>
 
     <script>
+        let currentMatchedId = null;
+
         function handleMatch(type) {
             const deck = document.getElementById('card-deck');
             const topCard = deck.querySelector('.profile-card');
@@ -637,13 +649,16 @@ if (empty($perfiles)) {
             const kissOverlay = document.getElementById('screenKissOverlay');
             const counterBadge = document.getElementById('counterBadge');
             const matchOverlay = document.getElementById('matchSuccessOverlay');
-            
+
             const soundMatch = document.getElementById('soundMatch');
             const soundNoMatch = document.getElementById('soundNoMatch');
-            
+
             if (topCard) {
+                currentMatchedId = topCard.getAttribute('data-id');
+                const cardBg = topCard.style.backgroundImage;
+
                 topCard.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-                
+
                 if (type === 'match') {
                     soundMatch.currentTime = 0;
                     soundMatch.play().catch(e => console.log("Audio play prevented:", e));
@@ -654,6 +669,8 @@ if (empty($perfiles)) {
                     glow.classList.remove('active');
                     void glow.offsetWidth; 
                     glow.classList.add('active');
+
+                    document.getElementById('matchedAvatar').style.backgroundImage = cardBg;
 
                     setTimeout(() => {
                         matchOverlay.classList.add('active');
@@ -667,12 +684,20 @@ if (empty($perfiles)) {
                     topCard.style.opacity = '0';
 
                     kissOverlay.classList.add('active');
-                    
+
                     setTimeout(() => {
                         kissOverlay.classList.remove('active');
                         removeCardAndCheck(topCard, counterBadge, deck);
                     }, 1400);
                 }
+            }
+        }
+
+        function viewMatchedProfile() {
+            if (currentMatchedId) {
+                window.location.href = 'perfil.php?id=' + currentMatchedId;
+            } else {
+                window.location.href = 'perfil.php';
             }
         }
 
@@ -693,7 +718,7 @@ if (empty($perfiles)) {
             if (card) card.remove();
             const remaining = deck.children.length;
             badge.textContent = `Perfiles: ${remaining}`;
-            
+
             if (remaining === 0) {
                 location.reload();
             }

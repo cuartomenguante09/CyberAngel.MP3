@@ -510,14 +510,14 @@ if ($pdo) {
             profileBtn.addEventListener('contextmenu', function(e) { e.preventDefault(); });
             profileBtn.addEventListener('mousedown', function(e) {
                 if (e.button === 0) {
-                    window.location.href = 'home.php'; 
+                    window.location.href = 'perfil.php'; 
                 } else if (e.button === 2) {
                     window.location.href = 'perfil.php';
                 }
             });
         }
 
-        document.getElementById('match-btn').addEventListener('click', () => { window.location.href = 'home.php'; });
+        document.getElementById('match-btn').addEventListener('click', () => { window.location.href = 'match.php'; });
         document.getElementById('add-btn').addEventListener('click', () => { window.location.href = 'agregar.php'; });
         document.getElementById('messages-btn').addEventListener('click', () => { window.location.href = 'mensajes.php'; });
         document.getElementById('notifications-btn').addEventListener('click', () => { window.location.href = 'notificaciones.php'; });

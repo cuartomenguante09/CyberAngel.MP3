@@ -20,10 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     exit();
 }
 
+// Identificamos al usuario actual desde la sesión (por defecto 'sofia' si no hay sesión iniciada)
+$nombre_usuario_actual = $_SESSION['usuario'] ?? 'sofia'; 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'eliminar_cuenta' && $pdo) {
     try {
-        $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = 1");
-        $stmt->execute();
+        $stmt = $pdo->prepare("DELETE FROM usuarios WHERE usuario = ?");
+        $stmt->execute([$nombre_usuario_actual]);
         session_destroy();
         header("Location: ../login.php");
         exit();
@@ -47,6 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo && !isset($_POST['accion'])) {
         $uploadFileDir = '../img/';
         $dest_path = $uploadFileDir . $newFileName;
 
+        if (!is_dir($uploadFileDir)) {
+            mkdir($uploadFileDir, 0755, true);
+        }
+
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
             $nuevo_avatar = $dest_path;
         } else {
@@ -57,11 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo && !isset($_POST['accion'])) {
     }
 
     try {
-        $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, edad = ?, bio = ?, mood = ?, avatar = ? WHERE id = 1");
-        $stmt->execute([$nuevo_nombre, $nueva_edad, $nuevo_bio, $nuevo_mood, $nuevo_avatar]);
+        $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, edad = ?, bio = ?, mood = ?, avatar = ? WHERE usuario = ?");
+        $stmt->execute([$nuevo_nombre, $nueva_edad, $nuevo_bio, $nuevo_mood, $nuevo_avatar, $nombre_usuario_actual]);
         $mensaje_exito = "¡Perfil actualizado con éxito!";
     } catch (Exception $e) {
-        $mensaje_exito = "Error al actualizar.";
+        $mensaje_exito = "Error al actualizar: " . $e->getMessage();
     }
 }
 
@@ -74,8 +81,9 @@ $usuario = [
 ];
 
 if ($pdo) {
-    $query = $pdo->query("SELECT * FROM usuarios LIMIT 1");
-    $resultado = $query->fetch(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE usuario = ? LIMIT 1");
+    $stmt->execute([$nombre_usuario_actual]);
+    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($resultado) {
         $usuario = array_merge($usuario, $resultado);
     }
@@ -250,7 +258,7 @@ if ($pdo) {
 
         .profile-img-wrap { position: relative; width: 100%; }
         .profile-img { width: 100%; height: 250px; object-fit: cover; border: 2px solid #ff007f; display: block; }
-       
+
         .change-avatar-btn {
             position: absolute;
             top: 8px;
@@ -472,6 +480,7 @@ if ($pdo) {
             transition: transform 0.15s ease-in-out;
             border-radius: 50%;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .nav-btn img {
@@ -479,6 +488,12 @@ if ($pdo) {
         }
 
         .nav-btn:hover { transform: scale(1.15) translateY(-2px); filter: drop-shadow(0 0 8px #ff007f); }
+
+        .nav-btn.active img {
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 0 12px #ff007f, 0 0 20px #ff007f !important;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -489,17 +504,17 @@ if ($pdo) {
             <span><?php echo htmlspecialchars($usuario['nombre']); ?></span>
         </div>
         <div class="top-nav-right">
-            <a href="home.php" class="top-nav-btn">★ MATCH</a>
+            <a href="home.php" class="top-nav-btn">★ HOME</a>
             <a href="perfil.php" class="top-nav-btn">PERFIL</a>
         </div>
     </div>
 
     <div class="main-container">
         <div class="profile-layout">
-           
+
             <div class="col-left">
                 <div style="font-size: 13px; color: #ff66b2; font-weight: bold; text-shadow: 0 0 5px #ff007f;">@angels4cyberlife_</div>
-               
+
                 <div class="box-card" style="padding: 6px;">
                     <div class="profile-img-wrap">
                         <button type="button" class="change-avatar-btn" onclick="document.getElementById('avatar_file_input').click();">📷 cambiar foto</button>
@@ -536,7 +551,7 @@ if ($pdo) {
                     <span class="friend-name">maiite</span>
                 </div>
             </div>
-           
+
             <div class="col-right">
                 <div class="header-tag" style="text-align: center;">
                     EDITAR PERFIL
@@ -544,7 +559,7 @@ if ($pdo) {
 
                 <div class="box-card form-edit" style="font-size: 12px; line-height: 1.4;">
                     <div style="color: #ff007f; font-family: 'Slackey', cursive; font-size: 11px; margin-bottom: 6px;">Angel's blogg!! &lt;3</div>
-                   
+
                     <?php if(!empty($mensaje_exito)): ?>
                         <div style="background: #ff007f; color: #fff; padding: 4px; font-size: 10px; text-align: center; margin-bottom: 6px;"><?php echo $mensaje_exito; ?></div>
                     <?php endif; ?>
@@ -600,7 +615,7 @@ if ($pdo) {
                                 </div>
                             </div>
                         </div>
-                       
+
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <div onclick="changeTrack('kIDWG7Xar4E', 'Genie in a Bottle', 'Christina Aguilera', '../img/cancion.jfif')" style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,127,0.15); border: 1px solid #ff007f; padding: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,0,127,0.4)'" onmouseout="this.style.background='rgba(255,0,127,0.15)'">
                                 <img src="../img/cancion.jfif" style="width: 32px; height: 32px; object-fit: cover; border: 1px solid #ff007f;" alt="1">
@@ -645,7 +660,7 @@ if ($pdo) {
 
         </div>
     </div>
-   
+
     <div class="custom-modal-overlay" id="deleteModal">
         <div class="custom-modal">
             <div class="custom-modal-header">
@@ -668,23 +683,23 @@ if ($pdo) {
     <div class="youtube-hidden">
         <div id="player"></div>
     </div>
-   
+
     <div class="bottom-nav">
-        <button class="nav-btn" id="profile-btn" title="Perfil">
+        <a href="perfil.php" class="nav-btn active" title="Perfil">
             <img src="../img/perfil.jfif" alt="Perfil">
-        </button>
-        <button class="nav-btn" id="match-btn" title="Match">
+        </a>
+        <a href="match.php" class="nav-btn" title="Match">
             <img src="../img/match.jfif" alt="Match">
-        </button>
-        <button class="nav-btn" id="add-btn" title="Agregar">
+        </a>
+        <a href="agregar.php" class="nav-btn" title="Agregar">
             <img src="../img/simbolomas.jfif" alt="Agregar">
-        </button>
-        <button class="nav-btn" id="messages-btn" title="Mensajes">
+        </a>
+        <a href="mensajes.php" class="nav-btn" title="Mensajes">
             <img src="../img/mensajes.jfif" alt="Mensajes">
-        </button>
-        <button class="nav-btn" id="notifications-btn" title="Notificaciones">
+        </a>
+        <a href="notificaciones.php" class="nav-btn" title="Notificaciones">
             <img src="../img/notificaciones.jfif" alt="Notificaciones">
-        </button>
+        </a>
     </div>
 
     <script>
@@ -734,26 +749,6 @@ if ($pdo) {
     function closeDeleteModal() {
         document.getElementById('deleteModal').classList.remove('active');
     }
-
-    document.getElementById('profile-btn').addEventListener('click', () => {
-        window.location.href = 'perfil.php';
-    });
-
-    document.getElementById('match-btn').addEventListener('click', () => {
-        window.location.href = 'home.php';
-    });
-
-    document.getElementById('add-btn').addEventListener('click', () => {
-        window.location.href = 'agregar.php';
-    });
-
-    document.getElementById('messages-btn').addEventListener('click', () => {
-        window.location.href = 'mensajes.php';
-    });
-
-    document.getElementById('notifications-btn').addEventListener('click', () => {
-        window.location.href = 'notificaciones.php';
-    });
 
     const items = [
         '<svg viewBox="0 0 24 24" fill="#ff007f"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',

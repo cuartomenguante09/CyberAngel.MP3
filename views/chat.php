@@ -16,7 +16,8 @@ $contacto = [
     ]
 ];
 
-if ($usuario_id === 'maite') {$contacto = [
+if ($usuario_id === 'maite') {
+    $contacto = [
         'nombre_contacto' => 'Maite',
         'avatar' => '../img/maite.jfif',
         'mensajes' => [
@@ -25,7 +26,8 @@ if ($usuario_id === 'maite') {$contacto = [
             ['tipo' => 'incoming', 'tipo_contenido' => 'sticker', 'ruta' => '../img/sticker3.png']
         ]
     ];
-} elseif ($usuario_id === 'lau') {$contacto = [
+} elseif ($usuario_id === 'lau') {
+    $contacto = [
         'nombre_contacto' => 'Lau',
         'avatar' => '../img/lau.jfif',
         'mensajes' => [
@@ -34,7 +36,8 @@ if ($usuario_id === 'maite') {$contacto = [
             ['tipo' => 'incoming', 'texto' => 'AMO']
         ]
     ];
-} elseif ($usuario_id === 'azu') {$contacto = [
+} elseif ($usuario_id === 'azu') {
+    $contacto = [
         'nombre_contacto' => 'Azu',
         'avatar' => '../img/azumy.jpg',
         'mensajes' => [
@@ -45,13 +48,15 @@ if ($usuario_id === 'maite') {$contacto = [
     ];
 } else {
     try {
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $stmt =$pdo->prepare("SELECT * FROM mensajes WHERE usuario_id = ?");
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $stmt = $pdo->prepare("SELECT * FROM mensajes WHERE usuario_id = ?");
         $stmt->execute([$usuario_id]);
-        $res =$stmt->fetch(PDO::FETCH_ASSOC);
-        if ($res) {$contacto['nombre_contacto'] = $res['nombre_contacto'] ?? $usuario_id;
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($res) {
+            $contacto['nombre_contacto'] = $res['nombre_contacto'] ?? $usuario_id;
             if (!empty($res['avatar'])) {
-                $contacto['avatar'] =$res['avatar'];
+                $contacto['avatar'] = $res['avatar'];
             }
         }
     } catch (PDOException $e) {}
@@ -64,7 +69,7 @@ if ($usuario_id === 'maite') {$contacto = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel mp3 - Chat con <?php echo htmlspecialchars($contacto['nombre_contacto']); ?></title>
     <link rel="icon" type="image/png" href="../img/logo.png">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
     <style>
         *, body, a, button, select, input {
@@ -115,8 +120,9 @@ if ($usuario_id === 'maite') {$contacto = [
             height: 100vh;
             overflow: hidden;
             background-image: url('../img/fondo.jfif');
-            background-repeat: repeat;
-            background-size: 600px auto;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
             font-family: 'Comic Sans MS', 'Courier New', sans-serif;
             color: #000000;
         }
@@ -233,7 +239,6 @@ if ($usuario_id === 'maite') {$contacto = [
             border-radius: 4px;
         }
 
-        /* Ajuste fino de paddings para que el texto quede centrado dentro del globo */
         .message {
             max-width: 80%;
             min-width: 140px;
@@ -306,7 +311,6 @@ if ($usuario_id === 'maite') {$contacto = [
             mix-blend-mode: multiply;
         }
 
-        /* Panel de Personalización */
         .bg-panel {
             position: absolute;
             top: 60px;
@@ -555,7 +559,7 @@ if ($usuario_id === 'maite') {$contacto = [
 <body>
 
     <div class="fullscreen-chat" id="fullscreenChat">
-        
+
         <div class="chat-header">
             <div class="chat-header-left">
                 <a href="mensajes.php" class="back-btn" title="Volver">◀</a>
@@ -567,25 +571,25 @@ if ($usuario_id === 'maite') {$contacto = [
             </div>
         </div>
 
-        
+
         <div class="chat-body" id="chatBody">
-            <?php foreach ($contacto['mensajes'] as$msg): ?>
-                <?php if (isset($msg['tipo_contenido']) &&$msg['tipo_contenido'] === 'sticker'): ?>
-                    <div class="message <?php echo $msg['tipo']; ?> sticker-bubble">
+            <?php foreach ($contacto['mensajes'] as $msg): ?>
+                <?php if (isset($msg['tipo_contenido']) && $msg['tipo_contenido'] === 'sticker'): ?>
+                    <div class="message <?php echo $msg['tipo']; ?> sticker-bubble" data-saved="true">
                         <img src="<?php echo htmlspecialchars($msg['ruta'] ?? '../img/sticker3.png'); ?>" alt="Sticker" class="sticker-img">
                     </div>
                 <?php else: ?>
-                    <div class="message <?php echo $msg['tipo']; ?>">
+                    <div class="message <?php echo $msg['tipo']; ?>" data-saved="true">
                         <?php echo htmlspecialchars($msg['texto']); ?>
                     </div>
                 <?php endif; ?>
             <?php endforeach; ?>
         </div>
 
-        
+
         <div class="bg-panel" id="bgPanel">
             <div class="panel-header">Personaliza tus chats mor!</div>
-            
+
             <div class="bg-subtitle">Fondos de chat inspos !;</div>
             <div class="bg-grid">
                 <div class="bg-option-card" style="background-image: url('../img/fondito1.jpg');" onclick="changeChatBackground('url(\'../img/fondito1.jpg\')')"></div>
@@ -602,7 +606,7 @@ if ($usuario_id === 'maite') {$contacto = [
             </div>
         </div>
 
-        
+
         <div class="emoji-picker-panel" id="emojiPanel">
             <div class="panel-header">DEFAULT ICONIC EMOJIS !</div>
             <div class="emoji-grid">
@@ -614,7 +618,7 @@ if ($usuario_id === 'maite') {$contacto = [
             </div>
         </div>
 
-        
+
         <div class="sticker-picker-panel" id="stickerPanel">
             <div class="panel-header">KAWAII STICKERS !</div>
             <div class="sticker-grid">
@@ -626,7 +630,7 @@ if ($usuario_id === 'maite') {$contacto = [
             </div>
         </div>
 
-        
+
         <div class="chat-input-bar">
             <button class="action-btn-input" id="toggleStickerBtn" title="Stickers">⭐</button>
             <button class="action-btn-input" id="toggleEmojiBtn" title="Emojis">😊</button>
@@ -667,6 +671,61 @@ if ($usuario_id === 'maite') {$contacto = [
         const toggleStickerBtn = document.getElementById('toggleStickerBtn');
         const stickerPanel = document.getElementById('stickerPanel');
         const fullscreenChat = document.getElementById('fullscreenChat');
+        
+        const storageKey = 'cyber_angel_chat_<?php echo $usuario_id; ?>';
+        const bgKey = 'cyber_angel_bg_<?php echo $usuario_id; ?>';
+        const bubbleKey = 'cyber_angel_bubble_<?php echo $usuario_id; ?>';
+
+        function loadCustomization() {
+            const savedBg = localStorage.getItem(bgKey);
+            if (savedBg) {
+                fullscreenChat.style.background = savedBg;
+                fullscreenChat.style.backgroundSize = 'cover';
+                fullscreenChat.style.backgroundPosition = 'center';
+                fullscreenChat.style.backgroundRepeat = 'no-repeat';
+            }
+
+            const savedBubble = localStorage.getItem(bubbleKey);
+            if (savedBubble) {
+                applyBubbleDesign(savedBubble);
+            }
+        }
+
+        loadCustomization();
+
+        function loadSavedMessages() {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                const messages = JSON.parse(saved);
+                messages.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    if (msg.isSticker) {
+                        msgDiv.className = 'message outgoing sticker-bubble';
+                        const imgEl = document.createElement('img');
+                        imgEl.src = msg.content;
+                        imgEl.className = 'sticker-img';
+                        msgDiv.appendChild(imgEl);
+                    } else {
+                        msgDiv.className = 'message outgoing';
+                        msgDiv.innerHTML = parseMessageContent(msg.content);
+                        const savedBubble = localStorage.getItem(bubbleKey);
+                        if (savedBubble) {
+                            msgDiv.style.backgroundImage = `url('../img/globo${savedBubble}derecha.png')`;
+                        }
+                    }
+                    chatBody.appendChild(msgDiv);
+                });
+            }
+        }
+
+        function saveMessageToStorage(content, isSticker = false) {
+            let saved = localStorage.getItem(storageKey);
+            let messages = saved ? JSON.parse(saved) : [];
+            messages.push({ content, isSticker });
+            localStorage.setItem(storageKey, JSON.stringify(messages));
+        }
+
+        loadSavedMessages();
 
         function parseMessageContent(text) {
             const escaped = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -681,7 +740,15 @@ if ($usuario_id === 'maite') {$contacto = [
                 const msgDiv = document.createElement('div');
                 msgDiv.className = 'message outgoing';
                 msgDiv.innerHTML = parseMessageContent(rawText);
+                
+                const savedBubble = localStorage.getItem(bubbleKey);
+                if (savedBubble) {
+                    msgDiv.style.backgroundImage = `url('../img/globo${savedBubble}derecha.png')`;
+                }
+
                 chatBody.appendChild(msgDiv);
+                saveMessageToStorage(rawText, false);
+
                 messageInput.value = "";
                 chatBody.scrollTop = chatBody.scrollHeight;
             }
@@ -736,6 +803,8 @@ if ($usuario_id === 'maite') {$contacto = [
                 chatBody.appendChild(msgDiv);
                 chatBody.scrollTop = chatBody.scrollHeight;
 
+                saveMessageToStorage(src, true);
+
                 stickerPanel.classList.remove('active');
             });
         });
@@ -745,10 +814,11 @@ if ($usuario_id === 'maite') {$contacto = [
             fullscreenChat.style.backgroundSize = 'cover';
             fullscreenChat.style.backgroundPosition = 'center';
             fullscreenChat.style.backgroundRepeat = 'no-repeat';
+            localStorage.setItem(bgKey, bgStyle);
             bgPanel.classList.remove('active');
         }
 
-        function changeBubbleDesign(id) {
+        function applyBubbleDesign(id) {
             const incomingMsgs = document.querySelectorAll('.message.incoming:not(.sticker-bubble)');
             const outgoingMsgs = document.querySelectorAll('.message.outgoing:not(.sticker-bubble)');
 
@@ -759,7 +829,11 @@ if ($usuario_id === 'maite') {$contacto = [
             outgoingMsgs.forEach(msg => {
                 msg.style.backgroundImage = `url('../img/globo${id}derecha.png')`;
             });
+        }
 
+        function changeBubbleDesign(id) {
+            applyBubbleDesign(id);
+            localStorage.setItem(bubbleKey, id);
             bgPanel.classList.remove('active');
         }
 
@@ -808,6 +882,6 @@ if ($usuario_id === 'maite') {$contacto = [
             setTimeout(() => sparkle.remove(), 800);
         }
     </script>
-      <?php include 'cookies.php'; ?>
+    <?php include 'cookies.php'; ?>
 </body>
 </html>

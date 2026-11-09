@@ -1,5 +1,4 @@
 <?php
-
 $notificaciones = [
     "Maliiittteee comenzó a seguirte",
     "Lauuuraaa te envió un post",
@@ -15,7 +14,7 @@ $notificaciones = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyber Angel - Notificaciones</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Slackey&display=swap" rel="stylesheet">
     <style>
         *, body, a, button, select, input {
@@ -50,8 +49,9 @@ $notificaciones = [
             margin: 0;
             padding: 0;
             background-image: url('../img/animal.jfif');
-            background-repeat: repeat;
-            background-size: 500px auto;
+            background-repeat: no-repeat; /* <--- No se repite en mosaico */
+            background-size: cover;       /* <--- Ocupa toda la pantalla estirándose perfecto */
+            background-position: center;  /* <--- Centrado elegante */
             font-family: 'Comic Sans MS', 'Courier New', sans-serif;
             color: #ffffff;
             display: flex;
@@ -225,7 +225,7 @@ $notificaciones = [
 
             profileBtn.addEventListener('mousedown', function(e) {
                 if (e.button === 0) {
-                    window.location.href = 'home.php'; 
+                    window.location.href = 'perfil.php'; 
                 } else if (e.button === 2) {
                     window.location.href = 'perfil.php';
                 }
@@ -276,6 +276,6 @@ $notificaciones = [
             }
         });
     </script>
-      <?php include 'cookies.php'; ?>
+    <?php include 'cookies.php'; ?>
 </body>
 </html>
